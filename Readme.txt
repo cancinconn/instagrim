@@ -7,7 +7,7 @@ The code uses org.imgscalr.Scalr for image manipulation
 It is a Netbeans maven based project.
 
 
-The code is used as an example for AC32007, School of Computing, Univeristy of Dundee.
+The code is used as an example for AC32007, School of Computing, University of Dundee.
 
 It implements the following URL patterns:
 
@@ -18,19 +18,19 @@ It implements the following URL patterns:
 /Login
 /Register
 
-Not all work 100% correctly .  Some parts of the implementation are missing.
+Not all work 100% correctly.  Some parts of the implementation are missing.
 
-Students are exected  to:
+Students are expected  to:
 1: Understand the code
 2: Fix any bugs
 3: Add functionality
 
-Some ideas for added functionality you might like to add (not all are simple, you decide what are and which you’d like to try).
+Some ideas for added functionality you might like to add (not all are simple, you decide what is and which you’d like to try).
 
-1: Extend the registration process and display a profile for users (add “\profile\*” for  instance)
+1: Extend the registration process and display a profile for users (add “\profile\*” for instance)
 2: Upload a users picture to the users profile
-3: Add image filters.  So /alter/filername/* would create a new version of the picture with that filter  applied.  
-4: Allow users to comment on other users pictures. /Image/Comments/* would display the picture with the comments.
+3: Add image filters.  So /alter/filtername/* would create a new version of the picture with that filter  applied.  
+4: Allow users to comment on other users' pictures. /Image/Comments/* would display the picture with the comments.
 
-This is not a limit to what you could do, use your imagination !
+This is not a limit to what you could do, use your imagination!
 
