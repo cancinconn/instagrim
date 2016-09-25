@@ -8,6 +8,14 @@ and open the template in the editor.
     Author     : Can
 */
 
+h1{
+    color: black;
+}
+
+h2{
+    color: black;
+}
+
 
 body {
     margin:0px;
@@ -56,63 +64,70 @@ body {
 
 .barTitle {
     margin: 0px;
-    padding: 0px;
     margin-right: 6px;
     margin-left: 6px;
+    padding: 1px;
     color: white;
     font-size: 180%;
     float: left;
+    display: block;
+}
+
+.barTitle a:hover {
+    background-color: #555;
+    color: white;
 }
 
 .barText {
     margin: 0px;
+    margin-top: 2px;
     padding: 10px;
     color: white;
-    font-size: 90%;
+    font-size: 80%;
     float: left;
     font-weight: normal;
     font-family: "Verdana";
+    font-style: italic;
 }
 
-
-h1 {
+.barTitle a:hover {
+    background-color: #555;
     color: white;
-    /* background-color: #00ff00; */
-}
-
-p {
-    /* background-color: rgb(255,0,255); */
 }
 
 nav {
-    text-align: left;
-    border: 2px;
-    float: right;
+
+}
+
+a {
+    font-family: "Times New Roman";
 }
 
 nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    width: 200px;
-    background-color: #f1f1f1;
+    float: left;
 }
 
 nav li {
+    float: left;
     display: block;
-    color: #000;
-    padding: 8px 16px;
+    color: #FFFFFF;
+    float: left;
     text-decoration: none;
 }
 
 nav li a {
+    float: left;
     display: block;
-    color: #000;
-    padding: 8px 16px;
+    color: #FFFFFF;
+    padding: 11px 16px;
     text-decoration: none;
 }
 
 nav li a:hover {
+    float: left;
     background-color: #555;
     color: white;
 }
