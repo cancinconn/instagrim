@@ -4,9 +4,10 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
 /* 
-    Created on : Sep 27, 2014, 1:34:36 PM
-    Author     : Administrator
+    Created on : 25-Sep-2016, 19:50:08
+    Author     : Can
 */
+
 
 body {
     margin:0px;
@@ -89,22 +90,13 @@ nav {
     float: right;
 }
 
-li {
-
-    display: block;
-    color: #000;
-    background-color: #66ffff;
-    padding: 8px 16px;
-    text-decoration: none;
-}
-
 nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
     width: 200px;
     background-color: #f1f1f1;
-} 
+}
 
 nav li {
     display: block;

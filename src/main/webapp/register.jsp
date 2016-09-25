@@ -10,7 +10,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Instagrim</title>
-        <link rel="stylesheet" type="text/css" href="Styles.css" />
+        <link rel="stylesheet" type="text/css" href="Styling.css" />
     </head>
     <body>
         <header>
@@ -19,8 +19,7 @@
         </header>
         <nav>
             <ul>
-                
-                <li><a href="/Instagrim/Images/majed">Sample Images</a></li>
+                <li><a href="${pageContext.request.contextPath}/Images/majed">Sample Images</a></li>
             </ul>
         </nav>
        
@@ -32,13 +31,13 @@
                     <li>Password <input type="password" name="password"></li>
                 </ul>
                 <br/>
-                <input type="submit" value="Regidter"> 
+                <input type="submit" value="Register"> 
             </form>
 
         </article>
         <footer>
             <ul>
-                <li class="footer"><a href="/Instagrim">Home</a></li>
+                <li class="footer"><a href="${pageContext.request.contextPath}">Home</a></li>
             </ul>
         </footer>
     </body>
