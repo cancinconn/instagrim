@@ -48,11 +48,17 @@ public class Register extends HttpServlet {
         String username=request.getParameter("username");
         String password=request.getParameter("password");
         
-        User us=new User();
-        us.setCluster(cluster);
-        us.RegisterUser(username, password);
+        //Error check
+        if (username == null || password == null)
+        {
+            //TODO: Handle NULL username and/or password
+        }
         
-	response.sendRedirect("/Instagrim");
+        User user=new User();
+        user.setCluster(cluster);
+        user.RegisterUser(username, password);
+        
+	response.sendRedirect(request.getContextPath());
         
     }
 
@@ -63,7 +69,7 @@ public class Register extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "This servlet handles the registration process.";
     }// </editor-fold>
 
 }

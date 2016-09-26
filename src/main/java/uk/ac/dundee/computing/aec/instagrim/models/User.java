@@ -28,8 +28,8 @@ public class User {
     }
     
     public boolean RegisterUser(String username, String Password){
-        AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
-        String EncodedPassword=null;
+        AeSimpleSHA1 sha1handler =  new AeSimpleSHA1();
+        String EncodedPassword = null;
         try {
             EncodedPassword= sha1handler.SHA1(Password);
         }catch (UnsupportedEncodingException | NoSuchAlgorithmException et){
@@ -44,6 +44,7 @@ public class User {
                 boundStatement.bind( // here you are binding the 'boundStatement'
                         username,EncodedPassword));
         //We are assuming this always works.  Also a transaction would be good here !
+        //TODO: Improve
         
         return true;
     }
@@ -65,7 +66,7 @@ public class User {
                 boundStatement.bind( // here you are binding the 'boundStatement'
                         username));
         if (rs.isExhausted()) {
-            System.out.println("No Images returned");
+            System.out.println("No Images returned"); //TODO: Figure out if this is actually about images or password being returned
             return false;
         } else {
             for (Row row : rs) {
