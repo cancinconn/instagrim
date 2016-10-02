@@ -27,6 +27,12 @@ import uk.ac.dundee.computing.aec.instagrim.models.User;
 public class Profile extends HttpServlet {
     
     private Cluster cluster;
+    
+        
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        cluster = CassandraHosts.getCluster();
+    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -63,11 +69,7 @@ public class Profile extends HttpServlet {
         rd.forward(request, response);
         
     }
-    
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        cluster = CassandraHosts.getCluster();
-    }
+
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

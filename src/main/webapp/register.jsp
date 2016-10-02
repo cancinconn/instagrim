@@ -27,6 +27,8 @@
                 <ul>
                     <li>User Name <input type="text" name="username"></li>
                     <li>Password <input type="password" name="password"></li>
+                    <li>First Name <input type="text" name="fname"></li>
+                    <li>Last Name <input type="text" name="lname"></li>
                 </ul>
                 <br/>
                 <input type="submit" value="Register"> 

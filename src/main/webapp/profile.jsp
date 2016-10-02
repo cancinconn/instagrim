@@ -37,6 +37,18 @@
             }
         %>
         </article>
+        
+        <%
+            if (lg != null) {
+                String UserName = lg.getUsername();
+                if (lg.getLoggedIn()) {
+        %>
+        
+        <li class="footer"><a href="${pageContext.request.contextPath}/updateProfile/<%=lg.getUsername()%>">Update Profile Details</a></li>
+        
+        <%      }
+            }%>
+        
         <footer>
             <ul>
                 <li class="footer"><a href="/Instagrim">Home</a></li>

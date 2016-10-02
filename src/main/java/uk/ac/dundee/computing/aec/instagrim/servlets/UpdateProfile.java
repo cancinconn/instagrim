@@ -3,13 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package uk.ac.dundee.computing.aec.instagrim.servlets;
 
 import com.datastax.driver.core.Cluster;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,18 +19,36 @@ import uk.ac.dundee.computing.aec.instagrim.models.User;
 
 /**
  *
- * @author Administrator
+ * @author Can
  */
-@WebServlet(name = "Register", urlPatterns = {"/Register"})
-public class Register extends HttpServlet {
-    Cluster cluster=null;
+@WebServlet(name = "UpdateProfile", urlPatterns = {"/UpdateProfile", "/UpdateProfile/*"})
+public class UpdateProfile extends HttpServlet {
+    
+        private Cluster cluster;
+    
+        
+    @Override
     public void init(ServletConfig config) throws ServletException {
-        // TODO Auto-generated method stub
         cluster = CassandraHosts.getCluster();
     }
 
 
-
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        response.sendRedirect(request.getContextPath() + "/" + "/updateProfile.jsp"); //use loggedIn (session attribute) to determine whose data we're altering
+        
+    }
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -45,7 +61,9 @@ public class Register extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String username=request.getParameter("username");
+        
+        //WHERE YOU LEFT OFF - todo: make updateProfile.jsp, make this servlet's post method update the user details and make get redirect to updateProfile.jsp, then test if the details change in the actual user profile view.
+        String username=request.getParameter("username"); //figure out a way to do this without passing the username explicityly
         String password=request.getParameter("password");
         String firstName=request.getParameter("fname");
         String lastName=request.getParameter("lname");
@@ -72,7 +90,7 @@ public class Register extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "This servlet handles the registration process.";
+        return "Short description";
     }// </editor-fold>
 
 }

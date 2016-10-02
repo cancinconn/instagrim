@@ -48,9 +48,33 @@ public class User {
                 boundStatement.bind( // here you are binding the 'boundStatement'
                         username,EncodedPassword));
         //We are assuming this always works.  Also a transaction would be good here !
-        //TODO: Improve - do not assume it always works, look into transaction
+        //TODO: Improve - do not assume it always works, look into transactions
         
         return true;
+    }
+    
+    public boolean UpdateDetails(String userName, String password, String firstName, String lastName)
+    {
+        
+        if (!IsValidUser(userName, password))
+        {
+            return false;
+        }
+        
+        Session session = cluster.connect("instagrim");
+        
+        PreparedStatement ps = session.prepare("UPDATE instagrim.userprofiles" +
+        " SET first_name = ?, last_name = ?" +
+        " WHERE login = ?");
+                
+        BoundStatement boundStatement = new BoundStatement(ps);
+        session.execute( // this is where the query is executed
+                boundStatement.bind( // here you are binding the 'boundStatement'
+                        firstName,lastName,userName));
+        
+        //TODO: Don't assume this always returns true (we return false if password is wrong but do nothing for other cases here)
+        return true;
+                
     }
     
     public boolean IsValidUser(String username, String Password){
