@@ -14,7 +14,9 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.LinkedList;
 import uk.ac.dundee.computing.aec.instagrim.lib.AeSimpleSHA1;
+import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
 
 /**
@@ -22,9 +24,11 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
  * @author Administrator
  */
 public class User {
+    
     Cluster cluster;
+    
     public User(){
-        
+
     }
     
     public boolean RegisterUser(String username, String Password){
@@ -44,7 +48,7 @@ public class User {
                 boundStatement.bind( // here you are binding the 'boundStatement'
                         username,EncodedPassword));
         //We are assuming this always works.  Also a transaction would be good here !
-        //TODO: Improve
+        //TODO: Improve - do not assume it always works, look into transaction
         
         return true;
     }
@@ -83,6 +87,57 @@ public class User {
        public void setCluster(Cluster cluster) {
         this.cluster = cluster;
     }
+       
+       
+       
+       public LinkedList<String> getDetails(String username)
+       {
+           
+        LinkedList<String> details = new LinkedList<String>();
+                           
+           if (cluster != null)
+           {
+                //TODO: Get details
+               
+                Session session = cluster.connect("instagrim");
+           
+                ResultSet rs = null;
+                PreparedStatement ps = null;
+           
+                ps = session.prepare("select first_name,last_name from userprofiles where login =?");
+           
+                BoundStatement boundStatement = new BoundStatement(ps);
+                rs = session.execute( // this is where the query is executed
+                    boundStatement.bind( // here you are binding the 'boundStatement'
+                            username));
+                
+                if (rs.isExhausted()) {
+                    System.out.println("No details returned.");
+                    details.add("Error: no details returned.");
+                    return details;
+                } else {
+                    for (Row row : rs) {
+                            details.add(row.getString("first_name")); //populate the linked list with the details cassandra returns
+                            details.add(row.getString("last_name")); //populate the linked list with the details cassandra returns
+                    }
+                }
+               
+           }
+           else
+           {
+               //error
+
+               System.out.println("Cluster was null for UserModel.");
+               
+                details.add("Test1");
+                details.add("Test2");
+                details.add("...");
+                details.add("Test5");
+           }
+           
+           return details;
+           
+       }
 
     
 }

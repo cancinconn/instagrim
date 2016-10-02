@@ -24,7 +24,6 @@
         <ul>
             <li><a href="upload.jsp">Upload</a></li>
                 <%
-
                     LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");
                     if (lg != null) {
                         String UserName = lg.getUsername();
@@ -32,6 +31,7 @@
                 %>
 
             <li><a href="${pageContext.request.contextPath}/Images/<%=lg.getUsername()%>">Your Images</a></li>
+            <li><a href="${pageContext.request.contextPath}/Profile/<%=lg.getUsername()%>">Your Profile</a></li>
                 <%}
                 } else {
                 %>
@@ -42,3 +42,5 @@
         </ul>
     </div>
 </nav>
+
+<!-- TODO: Avoid form resubmission on refresh (eg: after login) -->

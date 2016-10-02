@@ -136,7 +136,7 @@ public class Image extends HttpServlet {
             int i = is.available();
             HttpSession session=request.getSession();
             LoggedIn lg= (LoggedIn)session.getAttribute("LoggedIn");
-            String username="majed";
+            String username="majed"; // TODO: Figure out why there is a hard coded name here - also note this is the same name as the sample images
             if (lg.getLoggedIn()){
                 username=lg.getUsername();
             }
