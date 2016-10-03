@@ -17,7 +17,8 @@
         
  
         <article>
-            <h1>Your Details</h1>
+            <!--TODO: Change output depending on whether it is the profile of the logged-in user or someone else's)  -->
+            <h1>User Profile: </h1>
         <%
             java.util.LinkedList<String> userDetails = (java.util.LinkedList<String>) request.getAttribute("userDetails");
             if (userDetails == null) {
@@ -44,7 +45,7 @@
                 if (lg.getLoggedIn()) {
         %>
         
-        <li class="footer"><a href="${pageContext.request.contextPath}/updateProfile/<%=lg.getUsername()%>">Update Profile Details</a></li>
+        <li class="footer"><a href="${pageContext.request.contextPath}/UpdateProfile/<%=lg.getUsername()%>">Update Profile Details</a></li>
         
         <%      }
             }%>

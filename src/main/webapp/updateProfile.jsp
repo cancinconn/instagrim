@@ -4,14 +4,34 @@
     Author     : Can
 --%>
 
+<%@page import="java.util.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="uk.ac.dundee.computing.aec.instagrim.stores.*" %>
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-    </head>
+
+     <%@ include file="header.jsp" %>
+    
     <body>
-        <h1>Hello World!</h1>
+        
+ 
+        <article>
+            <h1>Update Your Details</h1>
+        
+            <form method="POST"  action="UpdateProfile">
+                <ul>
+                    <li>First Name <input type="text" name="fname"></li>
+                    <li>Last Name <input type="text" name="lname"></li>
+                    <li>Confirm your Password to save changes: <input type="password" name="password"></li>
+                </ul>
+                <br/>
+                <input type="submit" value="UpdateProfile"> 
+            </form>
+        
+        <footer>
+            <ul>
+                <li class="footer"><a href="/Instagrim">Home</a></li>
+            </ul>
+        </footer>
     </body>
 </html>
