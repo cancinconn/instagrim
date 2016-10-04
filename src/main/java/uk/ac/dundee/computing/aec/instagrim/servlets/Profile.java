@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
+import uk.ac.dundee.computing.aec.instagrim.stores.UserDetails;
 
 /**
  *
@@ -53,15 +54,9 @@ public class Profile extends HttpServlet {
         
         String[] args = request.getPathInfo().split("/");
         
-        LinkedList<String> userDetails = userModel.getDetails(args[1]);
+        //args[1] will be the user's username, use it to get details
+        UserDetails userDetails = userModel.getDetails(args[1]);
         
-        String debugStr = "";
-        for (int i = 0; i < args.length; i++)
-        {
-            debugStr += "(" + i + ", " + args[i] + ") ";
-        }
-        
-        if (userDetails != null) userDetails.add("debug: " + debugStr);
         
         //TODO: Make Profile.jsp which displays user details
         RequestDispatcher rd = request.getRequestDispatcher("/profile.jsp");

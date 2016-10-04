@@ -91,9 +91,20 @@ public class UpdateProfile extends HttpServlet {
         
         User user=new User();
         user.setCluster(cluster);
-        user.UpdateDetails(username, password, firstName, lastName);
+        user.updateDetails(username, password, firstName, lastName);
         
-	response.sendRedirect(request.getContextPath());
+        if (username!= null)
+        {
+            	response.sendRedirect(request.getContextPath()+"/Profile/"+username);
+        }
+        else
+        {
+            response.sendRedirect(request.getContextPath());
+        }
+        
+        //TODO: Make an error page that displays an error and redirect all errors there - use a stored error object for it
+        
+
         
     }
 

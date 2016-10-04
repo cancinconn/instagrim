@@ -20,7 +20,7 @@ It implements the following URL patterns:
 
 Not all work 100% correctly.  Some parts of the implementation are missing.
 
-Students are expected  to:
+Students are expected to:
 1: Understand the code
 2: Fix any bugs
 3: Add functionality

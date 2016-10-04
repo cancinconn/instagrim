@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import uk.ac.dundee.computing.aec.instagrim.lib.AeSimpleSHA1;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
+import uk.ac.dundee.computing.aec.instagrim.stores.UserDetails;
 
 /**
  *
@@ -31,7 +32,7 @@ public class User {
 
     }
     
-    public boolean RegisterUser(String username, String Password){
+    public boolean registerUser(String username, String Password){
         AeSimpleSHA1 sha1handler =  new AeSimpleSHA1();
         String EncodedPassword = null;
         try {
@@ -53,7 +54,7 @@ public class User {
         return true;
     }
     
-    public boolean UpdateDetails(String userName, String password, String firstName, String lastName)
+    public boolean updateDetails(String userName, String password, String firstName, String lastName)
     {
         
         if (!IsValidUser(userName, password))
@@ -114,11 +115,10 @@ public class User {
        
        
        
-       public LinkedList<String> getDetails(String username)
+       public UserDetails getDetails(String username)
        {
-           
-        LinkedList<String> details = new LinkedList<String>();
-                           
+            UserDetails details = null;    
+            
            if (cluster != null)
            {
                 //TODO: Get details
@@ -137,13 +137,19 @@ public class User {
                 
                 if (rs.isExhausted()) {
                     System.out.println("No details returned.");
-                    details.add("Error: no details returned.");
                     return details;
                 } else {
-                    for (Row row : rs) {
-                            details.add(row.getString("first_name")); //populate the linked list with the details cassandra returns
-                            details.add(row.getString("last_name")); //populate the linked list with the details cassandra returns
+                    
+                    //get details
+                    String firstName = null;
+                    String lastName = null;
+                    for (Row row : rs) { // we expect only one row here
+                            firstName = (row.getString("first_name")); //get the details cassandra returns
+                            lastName = (row.getString("last_name")); //get the details cassandra returns
                     }
+                    //assign to store object
+                    details = new UserDetails(username, firstName, lastName);
+                    
                 }
                
            }
@@ -151,12 +157,8 @@ public class User {
            {
                //error
 
-               System.out.println("Cluster was null for UserModel.");
+               System.out.println("Error: Cluster was null for UserModel.");
                
-                details.add("Test1");
-                details.add("Test2");
-                details.add("...");
-                details.add("Test5");
            }
            
            return details;

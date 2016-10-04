@@ -58,8 +58,8 @@ public class Register extends HttpServlet {
         
         User user=new User();
         user.setCluster(cluster);
-        user.RegisterUser(username, password);
-        user.UpdateDetails(username, password, firstName, lastName);
+        user.registerUser(username, password);
+        user.updateDetails(username, password, firstName, lastName);
         
 	response.sendRedirect(request.getContextPath());
         

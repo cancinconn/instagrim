@@ -28,7 +28,7 @@ public class Pic {
     public String getSUUID(){
         return UUID.toString();
     }
-    public void setPic(ByteBuffer bImage, int length,String type) {
+    public void setPic(ByteBuffer bImage, int length, String type) {
         this.bImage = bImage;
         this.length = length;
         this.type=type;

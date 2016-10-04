@@ -25,7 +25,7 @@
                     <li>Confirm your Password to save changes: <input type="password" name="password"></li>
                 </ul>
                 <br/>
-                <input type="submit" value="UpdateProfile"> 
+                <input type="submit" value="Update Profile"> 
             </form>
         
         <footer>

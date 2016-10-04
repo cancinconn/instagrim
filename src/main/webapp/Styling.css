@@ -9,7 +9,13 @@ and open the template in the editor.
 */
 
 h1{
+    display: block;
     color: black;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family:"Verdana";
 }
 
 h2{
@@ -60,6 +66,9 @@ body {
     margin-bottom: 0px;
     height: 40px;    
     box-shadow: 2px 2px 2px #888888;
+    
+    overflow: auto;
+    width:100%;
 }
 
 .barTitle {
@@ -71,6 +80,7 @@ body {
     font-size: 180%;
     float: left;
     display: block;
+    font-family: "Times New Roman";
 }
 
 .barTitle a:hover {
@@ -90,14 +100,28 @@ body {
     font-style: italic;
 }
 
+.barTextRight {
+    margin: 0px;
+    margin-top: 2px;
+    padding: 10px;
+    color: white;
+    font-size: 80%;
+    float: right;
+    font-weight: normal;
+    font-family: "Verdana";
+    font-style: italic;
+}
+
 .barTitle a:hover {
     background-color: #555;
     color: white;
 }
 
 nav {
-
+    
 }
+
+
 
 a {
     font-family: "Times New Roman";
@@ -130,4 +154,76 @@ nav li a:hover {
     float: left;
     background-color: #555;
     color: white;
+}
+
+.liRight {
+    float: right;
+    display: block;
+    color: #FFFFFF;
+    float: left;
+    text-decoration: none;
+}
+
+.liRight a {
+    float: right;
+    display: block;
+    color: #FFFFFF;
+    padding: 11px 16px;
+    text-decoration: none;
+}
+
+.liRight a:hover {
+    float: right;
+    background-color: #555;
+    color: white;
+}
+
+.centerDiv {
+    margin:auto;
+    width:400px;
+    height:400px;
+    
+    background: #454545;
+    padding: 20px; 
+    box-shadow: 2px 2px 2px #888888;
+    
+}
+
+.leftDiv {
+    float:left;
+}
+
+.rightDiv {
+
+    float: right;
+}
+
+.leftDivProfile {
+    float:left;
+    width:190px;
+}
+
+.rightDivProfile {
+
+    float: right;
+    width:190px;
+}
+
+p{
+    color: white;
+    font-family: "Verdana";
+}
+
+.pLeft{
+    color: white;
+    font-family: "Verdana";
+    float:left;
+    clear:left;
+}
+
+.pRight{
+    color: white;
+    font-family: "Verdana";
+    float:right;
+    clear:right;
 }

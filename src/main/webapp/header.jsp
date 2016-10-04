@@ -17,6 +17,8 @@
 <nav>
 
     <div class="titleBox">
+        
+        <div class="leftDiv">
         <a href="${pageContext.request.contextPath}" >
             <p class="barTitle">Instagrim :|  </p>
             <p class="barText">Your world in black and white.</p>
@@ -32,11 +34,19 @@
 
             <li><a href="${pageContext.request.contextPath}/Images/<%=lg.getUsername()%>">Your Images</a></li>
             <li><a href="${pageContext.request.contextPath}/Profile/<%=lg.getUsername()%>">Your Profile</a></li>
+            
+            </div> <!--close leftDiv -->
+            <!-- User's Name & related Components go below-->
+            
+            <div class = "rightDiv">
+            <li class="liRight"><a href="${pageContext.request.contextPath}/Profile/<%=lg.getUsername()%>"><%=lg.getUsername()%></a></li>
+            </div>
                 <%}
                 } else {
                 %>
             <li><a href="${pageContext.request.contextPath}/register.jsp">Register</a></li>
             <li><a href="${pageContext.request.contextPath}/login.jsp">Login</a></li>
+            </div> <!--close leftDiv -->
                 <%
                         }%>
         </ul>
