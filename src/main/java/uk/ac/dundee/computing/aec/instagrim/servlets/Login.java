@@ -25,7 +25,7 @@ import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
  *
  * @author Administrator
  */
-@WebServlet(name = "Login", urlPatterns = {"/Login"})
+@WebServlet(name = "Login", urlPatterns = {"/Login", "/login"})
 public class Login extends HttpServlet {
 
     Cluster cluster=null;
@@ -56,6 +56,8 @@ public class Login extends HttpServlet {
         boolean isValid=us.IsValidUser(username, password);
         HttpSession session=request.getSession();
         System.out.println("Session in servlet "+session);
+       
+        
         if (isValid){
             LoggedIn lg= new LoggedIn();
             lg.setLoggedIn();

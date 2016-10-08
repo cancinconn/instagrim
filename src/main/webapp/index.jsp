@@ -35,6 +35,7 @@
         <footer>
             <ul>
                 <li class="footer"><a href="/Instagrim">Home</a></li>
+                <li>Built by Can Gafuroglu upon the works of Andy C</li>
                 <li>&COPY; Andy C</li>
             </ul>
         </footer>

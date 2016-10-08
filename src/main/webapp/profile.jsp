@@ -15,64 +15,17 @@
     
     <body>
         
- 
-            <!--TODO: Change output depending on whether it is the profile of the logged-in user or someone else's)  -->
             
+        <!-- Presentation logic for when the user is NOT found -->
         <%
-            UserDetails userDetails = (UserDetails) request.getAttribute("userDetails");
-    if (userDetails == null) {
+        UserDetails userDetails = (UserDetails) request.getAttribute("userDetails");
+        if (userDetails == null) {
         %>
-        <p>No details found</p>
-        <% } else { %>
+        <p class="pageText">No details found</p>
+        <% } else {
         
-                <%
-                    //if this profile belongs to this session's LoggedIn user
-            if (lg != null) {
-                if (lg.getLoggedIn() && lg.getUsername().equals(userDetails.getUsername())) {
+        //Presentation logic for when the user IS found -->
         %>
-        
-        <h1> <%=userDetails.getUsername()%>'s Profile (Yours!) </h1>
-        
-                <%      }
-else {
-%>
-
-        <h1> <%=userDetails.getUsername()%>'s Profile </h1>
-
-<%
-}
-
-            } else { //if not logged in:
-%>
-            <h1> <%=userDetails.getUsername()%>'s Profile </h1>
-                    
-            <%}%>
-
-            <!-- 3 divs: center div to contain left and right divs. left identifies the data, right displays it. -->
-            
-            <div class="centerDiv"> 
-            
-            <div class="leftDivProfile"> 
-            
-            <p class="pRight">First Name: </p>
-            <p class="pRight"> Last Name: </p>
-            
-            </div>
-            
-            <div class="rightDivProfile"> 
-            
-                <% if (userDetails.getFirstName() != null) { %> <p class="pLeft"><%=userDetails.getFirstName()%> </p>  <% } else { %> <p class="pLeft"> Unknown </p> <% } %>
-                <% if (userDetails.getFirstName() != null) { %> <p class="pLeft"><%=userDetails.getLastName()%> </p>  <% } else { %> <p class="pLeft"> Unknown </p> <% } %>
-            
-            </div>
-            
-            </div>
-            
-
-         
-         <br/>
-        
-         <% } %>
         
         <%
             //if this profile belongs to this session's LoggedIn user
@@ -80,10 +33,72 @@ else {
                 if (lg.getLoggedIn() && lg.getUsername().equals(userDetails.getUsername())) {
         %>
         
+        <h1> <%=userDetails.getUsername()%>'s Profile (Yours!) </h1>
+        
+        <%      } else { 
+        //if this profile belongs to someone else
+        %>
+
+        <h1> <%=userDetails.getUsername()%>'s Profile </h1>
+
+        <%
+            }
+        } else { 
+            //if not logged in:
+            %>
+            <h1> <%=userDetails.getUsername()%>'s Profile </h1>
+                    
+            <%}%>
+            
+            
+            <!-- Code for formatting page contents: -->
+            
+            <!-- Display Profile Picture -->
+            
+            <%
+                Pic profilePic = (Pic) request.getAttribute("profilePicture");
+                if (profilePic == null) {
+                %>
+                <p class = "pageText">This user does not have a profile picture.</p>
+                <%
+                } else {
+                %>
+                <a href="/Instagrim/Image/<%=profilePic.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=profilePic.getSUUID()%>"></a><br/>
+                <%
+                }
+            %>
+
+            <!-- 3 divs: center div to contain left and right divs. left identifies the data, right displays it. -->
+            
+            <div class="centerDiv"> 
+                <div class="leftDivProfile"> 
+                    <p class="pRight">First Name: </p>
+                    <p class="pRight"> Last Name: </p>
+                </div>
+                <div class="rightDivProfile"> 
+                    <% if (userDetails.getFirstName() != null) { %> <p class="pLeft"><%=userDetails.getFirstName()%> </p>  <% } else { %> <p class="pLeft"> Unknown </p> <% } %>
+                    <% if (userDetails.getFirstName() != null) { %> <p class="pLeft"><%=userDetails.getLastName()%> </p>  <% } else { %> <p class="pLeft"> Unknown </p> <% } %>
+                </div>
+            </div>
+         <br/>
+         
+         
+         
+         <%
+         //Finally, display the profile editing option if this profile belongs to this session's LoggedIn user
+         if (lg != null) {
+            if (lg.getLoggedIn() && lg.getUsername().equals(userDetails.getUsername())) { %>
+        
         <li class="footer"><a href="${pageContext.request.contextPath}/UpdateProfile/<%=lg.getUsername()%>">Update Profile Details</a></li>
         
-        <%      }
-            }%>
+        <%  }
+        }
+        %>
+         
+        
+         <%} //End of page display logic %>
+        
+
         
     </body>
 </html>

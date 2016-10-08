@@ -47,8 +47,13 @@ public final class Keyspaces {
                     + "      first_name text,\n"
                     + "      last_name text,\n"
                     + "      email set<text>,\n"
-                    + "      addresses  map<text, frozen <address>>\n"
+                    + "      addresses  map<text, frozen <address>>,\n"
+                    + "      profilePicID uuid\n"
                     + "  );";
+
+            //TODO: Remove
+            //String Alteration = "      ALTER TABLE instagrim.userprofiles ADD profilePicID uuid;";
+
             Session session = c.connect();
             try {
                 PreparedStatement statement = session
@@ -69,7 +74,7 @@ public final class Keyspaces {
                 SimpleStatement cqlQuery = new SimpleStatement(CreatePicTable);
                 session.execute(cqlQuery);
             } catch (Exception et) {
-                System.out.println("Can't create tweet table " + et);
+                System.out.println("Can't create pic table " + et);
             }
             System.out.println("" + Createuserpiclist);
 
@@ -93,6 +98,15 @@ public final class Keyspaces {
             } catch (Exception et) {
                 System.out.println("Can't create Address Profile " + et);
             }
+
+            //TODO: Remove
+            try {
+                //SimpleStatement cqlQuery = new SimpleStatement(Alteration);
+                //session.execute(cqlQuery);
+            } catch (Exception et) {
+                System.out.println("Can't create make alteration " + et);
+            }
+
             session.close();
 
         } catch (Exception et) {

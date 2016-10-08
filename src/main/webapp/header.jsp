@@ -40,9 +40,10 @@
             
             <div class = "rightDiv">
             <li class="liRight"><a href="${pageContext.request.contextPath}/Profile/<%=lg.getUsername()%>"><%=lg.getUsername()%></a></li>
+            <li class="liRight"><a href="${pageContext.request.contextPath}/Logout">Log out</a></li>
             </div>
                 <%}
-                } else {
+                } else { //ıf not logged in:
                 %>
             <li><a href="${pageContext.request.contextPath}/register.jsp">Register</a></li>
             <li><a href="${pageContext.request.contextPath}/login.jsp">Login</a></li>

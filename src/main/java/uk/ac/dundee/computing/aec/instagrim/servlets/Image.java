@@ -32,8 +32,8 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
  * Servlet implementation class Image
  */
 @WebServlet(urlPatterns = {
-    "/Image",
-    "/Image/*",
+    "/RawImage",
+    "/RawImage/*",
     "/Thumb/*",
     "/Images",
     "/Images/*"
@@ -54,7 +54,7 @@ public class Image extends HttpServlet {
     public Image() {
         super();
         // TODO Auto-generated constructor stub
-        CommandsMap.put("Image", 1);
+        CommandsMap.put("RawImage", 1);
         CommandsMap.put("Images", 2);
         CommandsMap.put("Thumb", 3);
 
@@ -80,13 +80,13 @@ public class Image extends HttpServlet {
             return;
         }
         switch (command) {
-            case 1:
+            case 1: //Image
                 DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
                 break;
-            case 2:
+            case 2: //Images
                 DisplayImageList(args[2], request, response);
                 break;
-            case 3:
+            case 3: //Thumb
                 DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
                 break;
             default:
