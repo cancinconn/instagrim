@@ -161,6 +161,7 @@ public class PicModel {
     public Pic getPic(int image_type, java.util.UUID picid) {
         Session session = cluster.connect("instagrim");
         ByteBuffer bImage = null;
+        String username = null;
         String type = null;
         int length = 0;
         try {
@@ -174,7 +175,7 @@ public class PicModel {
             } else if (image_type == Convertors.DISPLAY_THUMB) {
                 ps = session.prepare("select thumb,imagelength,thumblength,type from pics where picid =?");
             } else if (image_type == Convertors.DISPLAY_PROCESSED) {
-                ps = session.prepare("select processed,processedlength,type from pics where picid =?");
+                ps = session.prepare("select user,processed,processedlength,type from pics where picid =?");
             }
             BoundStatement boundStatement = new BoundStatement(ps);
             rs = session.execute( // this is where the query is executed
@@ -194,6 +195,7 @@ public class PicModel {
                         length = row.getInt("thumblength");
                 
                     } else if (image_type == Convertors.DISPLAY_PROCESSED) {
+                        username = row.getString("user");
                         bImage = row.getBytes("processed");
                         length = row.getInt("processedlength");
                     }
@@ -209,7 +211,13 @@ public class PicModel {
         session.close();
         Pic p = new Pic();
         p.setPic(bImage, length, type);
-
+        p.setUUID(picid); //safe to set picid now that we've found it in the database.
+        
+        if (username != null)
+        {
+            p.setUsername(username);
+        }
+        
         return p;
 
     }

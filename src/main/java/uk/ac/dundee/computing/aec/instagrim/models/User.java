@@ -15,6 +15,7 @@ import com.datastax.driver.core.Session;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
+import java.util.UUID;
 import uk.ac.dundee.computing.aec.instagrim.lib.AeSimpleSHA1;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
@@ -51,6 +52,23 @@ public class User {
         //We are assuming this always works.  Also a transaction would be good here !
         //TODO: Improve - do not assume it always works, look into transactions
         
+        return true;
+    }
+    
+    public boolean updatePicture(String username, String picUUID)
+    {
+        Session session = cluster.connect("instagrim");
+        
+        PreparedStatement ps = session.prepare("UPDATE instagrim.userprofiles" +
+        " SET profilePicID = ?" +
+        " WHERE login = ?");
+                
+        BoundStatement boundStatement = new BoundStatement(ps);
+        session.execute( // this is where the query is executed
+                boundStatement.bind( // here you are binding the 'boundStatement'
+                        UUID.fromString(picUUID), username));
+        
+        //TODO: Don't assume this always returns true (we return false if password is wrong but do nothing for other cases here)
         return true;
     }
     

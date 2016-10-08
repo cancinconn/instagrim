@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.UUID;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -34,6 +35,8 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
 @WebServlet(urlPatterns = {
     "/RawImage",
     "/RawImage/*",
+    "/Image",
+    "/Image/*",
     "/Thumb/*",
     "/Images",
     "/Images/*"
@@ -57,7 +60,7 @@ public class Image extends HttpServlet {
         CommandsMap.put("RawImage", 1);
         CommandsMap.put("Images", 2);
         CommandsMap.put("Thumb", 3);
-
+        CommandsMap.put("Image", 4);
     }
 
     public void init(ServletConfig config) throws ServletException {
@@ -80,7 +83,7 @@ public class Image extends HttpServlet {
             return;
         }
         switch (command) {
-            case 1: //Image
+            case 1: //Raw Image
                 DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
                 break;
             case 2: //Images
@@ -89,9 +92,30 @@ public class Image extends HttpServlet {
             case 3: //Thumb
                 DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
                 break;
+            case 4: //request for Image Page
+                ForwardToImagePage(Convertors.DISPLAY_PROCESSED, request, response, args[2]);
+                break;
             default:
                 error("Bad Operator", response);
         }
+    }
+    
+    protected void ForwardToImagePage(int imageType, HttpServletRequest request, HttpServletResponse response, String uuid) throws ServletException, IOException {
+        
+        //get image uuid to be displayed on the page
+        Pic pic = null;
+        
+        //get the Pic object for the uuid
+        PicModel picModel = new PicModel();
+        picModel.setCluster(cluster);
+        pic = picModel.getPic(imageType, UUID.fromString(uuid));
+        
+        
+        //then send the user off to the page, with the pic passed as an attribute
+        RequestDispatcher rd = request.getRequestDispatcher("/displayPicture.jsp");
+        request.setAttribute("pic", pic);
+        rd.forward(request, response);
+        
     }
 
     private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
