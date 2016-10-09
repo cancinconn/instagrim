@@ -63,7 +63,7 @@
                 <%
                 } else {
                 %>
-                <a href="/Instagrim/Image/<%=profilePic.getSUUID()%>" ><img class = "profilePic"src="/Instagrim/Thumb/<%=profilePic.getSUUID()%>"></a><br/>
+                <a href="${pageContext.request.contextPath}/Image/<%=profilePic.getSUUID()%>" ><img class = "profilePic"src="${pageContext.request.contextPath}/Thumb/<%=profilePic.getSUUID()%>"></a><br/>
                 <%
                 }
             %>
@@ -80,17 +80,18 @@
                     <% if (userDetails.getFirstName() != null) { %> <p class="pLeft"><%=userDetails.getLastName()%> </p>  <% } else { %> <p class="pLeft"> Unknown </p> <% } %>
                 </div>
             </div>
-         <br/>
-         
-         
+                
+                <div class="buttonDiv">
+                    <a href="${pageContext.request.contextPath}/Images/<%=userDetails.getUsername()%>" class="button">View pictures by <%=userDetails.getUsername()%></a>
+                </div>
          
          <%
          //Finally, display the profile editing option if this profile belongs to this session's LoggedIn user
          if (lg != null) {
             if (lg.getLoggedIn() && lg.getUsername().equals(userDetails.getUsername())) { %>
-        
-        <li class="footer"><a href="${pageContext.request.contextPath}/UpdateProfile/<%=lg.getUsername()%>">Update Profile Details</a></li>
-        
+                <div class="buttonDiv">
+                    <a href="${pageContext.request.contextPath}/UpdateProfile/<%=lg.getUsername()%>" class="button">Update Profile Details</a>
+                </div>
         <%  }
         }
         %>

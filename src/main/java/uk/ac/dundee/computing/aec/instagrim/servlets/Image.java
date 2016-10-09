@@ -28,8 +28,10 @@ import org.apache.commons.fileupload.util.Streams;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
 import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
+import uk.ac.dundee.computing.aec.instagrim.models.User;
 import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
+import uk.ac.dundee.computing.aec.instagrim.stores.UserDetails;
 
 /**
  * Servlet implementation class Image
@@ -121,11 +123,23 @@ public class Image extends HttpServlet {
     }
 
     private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        //We also need the user Model to grab information from cassandra on whose pictures are being displayed
+        User userModel = new User();
+        userModel.setCluster(cluster);
+        
+        String[] args = request.getPathInfo().split("/");
+        //args[1] will be the user's username, use it to get details
+        String username = args[1];
+        UserDetails userDetails = userModel.getDetails(username);
+        
         PicModel tm = new PicModel();
         tm.setCluster(cluster);
         java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(User);
         RequestDispatcher rd = request.getRequestDispatcher("/UsersPics.jsp");
         request.setAttribute("Pics", lsPics);
+        request.setAttribute("userDetails", userDetails);
+        
         rd.forward(request, response);
 
     }

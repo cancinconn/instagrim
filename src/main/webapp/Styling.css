@@ -64,7 +64,7 @@ body {
     padding: 0px; 
     margin: 0px;
     margin-bottom: 0px;
-    height: 40px;    
+    height: 41px;    
     box-shadow: 2px 2px 2px #888888;
     
     overflow: auto;
@@ -154,6 +154,7 @@ nav li a:hover {
     float: left;
     background-color: #555;
     color: white;
+    /* text-decoration: none; */
 }
 
 .liRight {
@@ -176,12 +177,13 @@ nav li a:hover {
     float: right;
     background-color: #555;
     color: white;
+    /* text-decoration: none; */
 }
 
 .centerDiv {
     margin:auto;
     width:400px;
-    height:400px;
+    height:106px;
     
     background: #454545;
     padding: 20px; 
@@ -250,7 +252,56 @@ p{
     margin: auto;
 }
 
-.Pic {
+.pic {
     display:block;
     margin: auto;
+}
+
+.picThumb {
+    display:block;
+    margin: auto;
+}
+
+a {
+    font-family: "Verdana";
+    color: #ff9900;
+    text-decoration: none;
+}
+
+a:hover {
+    font-family: "Verdana";
+    color: #ff9900;
+    text-decoration: underline;
+}
+
+.buttonDiv {
+    margin:auto;
+    width:400px;
+    text-align:center;
+}
+
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 16px 2px;
+    cursor: pointer;
+}
+
+.button:hover{
+    background-color: #333333;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 16px 2px;
+    cursor: pointer;
 }

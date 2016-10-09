@@ -31,19 +31,24 @@
             <p class = "pageText"><%=pic.getTitle()%></p>
         </div>
         <!-- Display pic (output comes from Image servlet, written as an image in the response) -->
-        <img class="Pic" src="${pageContext.request.contextPath}/RawImage/<%=pic.getSUUID()%>"><br/>
+        <img class="pic" src="${pageContext.request.contextPath}/RawImage/<%=pic.getSUUID()%>"><br/>
         
         <!-- Display author -->
         <p class = "pageText">by <a href="${pageContext.request.contextPath}/Profile/<%=pic.getUsername()%>"><%=pic.getUsername()%></a></p>
          
+        <div class="buttonDiv">
+            <a class="button" href="${pageContext.request.contextPath}/Images/<%=pic.getUsername()%>">View other pictures by <%=pic.getUsername()%></a></li>
+        </div>
+        
         <%
             if (lg != null)
             {
                 
         if (pic.getUsername().equals(lg.getUsername()))
         { //If this is a picture that belongs to the user that is currently logged in: %>
-        
-        <li class="pageText"><a href="${pageContext.request.contextPath}/UpdateProfilePicture/<%=pic.getSUUID()%>">Set as profile picture</a></li>
+        <div class="buttonDiv">
+            <a class="button" href="${pageContext.request.contextPath}/UpdateProfilePicture/<%=pic.getSUUID()%>">Set as profile picture</a></li>
+        </div>
         
         <%  }
         }%>

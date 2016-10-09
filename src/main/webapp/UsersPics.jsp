@@ -9,27 +9,25 @@
 <%@ page import="uk.ac.dundee.computing.aec.instagrim.stores.*" %>
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Instagrim</title>
-        <link rel="stylesheet" type="text/css" href="/Instagrim/Styles.css" />
-    </head>
+    
+    <%@ include file="header.jsp" %>
+    
     <body>
-        <header>
-        
-        <h1>InstaGrim ! </h1>
-        <h2>Your world in Black and White</h2>
-        </header>
-        
-        <nav>
-            <ul>
-                <li class="nav"><a href="/Instagrim/upload.jsp">Upload</a></li>
-                <li class="nav"><a href="/Instagrim/Images/majed">Sample Images</a></li>
-            </ul>
-        </nav>
  
         <article>
-            <h1>Your Pics</h1>
+            
+        <!-- Presentation logic for when the user is NOT found -->
+        <%
+        UserDetails userDetails = (UserDetails) request.getAttribute("userDetails");
+        if (userDetails == null) {
+        %>
+        <p class="pageText">User not found.</p>
+        <% } else {
+        //Presentation logic for when the user IS found -->
+        %>
+            
+            <h1>Pictures by <a href="${pageContext.request.contextPath}/Profile/<%=userDetails.getUsername()%>"><%=userDetails.getUsername()%></a></h1>
+            
         <%
             java.util.LinkedList<Pic> lsPics = (java.util.LinkedList<Pic>) request.getAttribute("Pics");
             if (lsPics == null) {
@@ -37,22 +35,47 @@
         <p>No Pictures found</p>
         <%
         } else {
+
+%>                 <table align="center"> <%
+
+            int counter = -1; //keeps track of the position of the picture we are displaying
+            int rowCount = 3; //how many pictures do we display in one row?
             Iterator<Pic> iterator;
             iterator = lsPics.iterator();
-            while (iterator.hasNext()) {
+            while (iterator.hasNext()) 
+            {
                 Pic p = (Pic) iterator.next();
-
+                counter++;
         %>
-        <a href="/Instagrim/Image/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a><br/><%
+        
+        <!-- Put a new row in every time counter is divisible by rowCount. -->
+                        <% if ((counter % rowCount) == 0)
+                        { %>
+                        </tr> <!--end the last table row-->
+                        <tr> <!-- start a new table row-->
+                        <%
+                        } %>
+
+                     <!-- display the image -->
+                    <td>
+                            <a href="${pageContext.request.contextPath}/Image/<%=p.getSUUID()%>" ><img class="picThumb" src="${pageContext.request.contextPath}/Thumb/<%=p.getSUUID()%>"></a>
+                    </td>
+        
+        
+        <%
 
             }
+
+%>              </tr> <!--end the last table row-->         
+            </table> <%
+
             }
         %>
+        
+        
+        <%
+} //END PRESENTATION LOGIC
+%>   
         </article>
-        <footer>
-            <ul>
-                <li class="footer"><a href="/Instagrim">Home</a></li>
-            </ul>
-        </footer>
     </body>
 </html>

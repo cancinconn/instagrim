@@ -9,16 +9,9 @@
 <html>
     
     
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Instagrim</title>
-        <link rel="stylesheet" type="text/css" href="Styles.css" />
-    </head>
-    
+    <%@ include file="header.jsp" %>
     
     <body>
-        <h1>InstaGrim ! </h1>
-        <h2>Your world in Black and White</h2>
         <nav>
             <ul>
                 <li class="nav"><a href="${pageContext.request.contextPath}/upload.jsp">Upload</a></li>
