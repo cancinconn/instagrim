@@ -24,7 +24,7 @@
             <p class="barText">Your world in black and white.</p>
         </a>
         <ul>
-            <li><a href="upload.jsp">Upload</a></li>
+            <li><a href="${pageContext.request.contextPath}/upload.jsp">Upload</a></li>
                 <%
                     LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");
                     if (lg != null) {

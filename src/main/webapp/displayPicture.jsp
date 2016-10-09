@@ -27,10 +27,11 @@
         //Presentation logic for when the picture IS found -->
         %>
         
-        <p class = "pageText">Picture: </p>
-        
+        <div class = "centerDivTitleNoBG">
+            <p class = "pageText"><%=pic.getTitle()%></p>
+        </div>
         <!-- Display pic (output comes from Image servlet, written as an image in the response) -->
-        <img src="${pageContext.request.contextPath}/RawImage/<%=pic.getSUUID()%>"><br/>
+        <img class="Pic" src="${pageContext.request.contextPath}/RawImage/<%=pic.getSUUID()%>"><br/>
         
         <!-- Display author -->
         <p class = "pageText">by <a href="${pageContext.request.contextPath}/Profile/<%=pic.getUsername()%>"><%=pic.getUsername()%></a></p>

@@ -18,6 +18,7 @@ public class Pic {
     private int length;
     private String type;
     private java.util.UUID UUID=null;
+    private String title;
     private String username;
     
     public void Pic() {
@@ -26,6 +27,11 @@ public class Pic {
     public void setUsername(String name)
     {
         username = name;
+    }
+    
+    public void setTitle(String title)
+    {
+        this.title = title;
     }
     
     public void setUUID(java.util.UUID UUID){
@@ -50,6 +56,11 @@ public class Pic {
     
     public String getType(){
         return type;
+    }
+    
+    public String getTitle()
+    {
+        return title;
     }
     
     public String getUsername()

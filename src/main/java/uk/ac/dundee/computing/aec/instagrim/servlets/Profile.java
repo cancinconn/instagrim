@@ -15,9 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import com.datastax.driver.core.Cluster;
 import java.util.LinkedList;
+import java.util.UUID;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
+import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
+import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
+import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
 import uk.ac.dundee.computing.aec.instagrim.stores.UserDetails;
 
 /**
@@ -49,18 +53,28 @@ public class Profile extends HttpServlet {
         
         //TODO: Read username from URL
         
+        //Initialise user and pic models which will grab data from cassandra
         User userModel = new User();
         userModel.setCluster(cluster);
+        
+        PicModel picModel = new PicModel();
+        picModel.setCluster(cluster);
         
         String[] args = request.getPathInfo().split("/");
         
         //args[1] will be the user's username, use it to get details
-        UserDetails userDetails = userModel.getDetails(args[1]);
+        String username = args[1];
+        UserDetails userDetails = userModel.getDetails(username);
         
         
-        //TODO: Make Profile.jsp which displays user details
         RequestDispatcher rd = request.getRequestDispatcher("/profile.jsp");
         request.setAttribute("userDetails", userDetails);
+        
+        UUID picid = userModel.getProfilePicID(username);
+        
+        Pic profilePic =  picModel.getPic(Convertors.DISPLAY_THUMB, picid);
+        request.setAttribute("profilePic", profilePic);
+        
         rd.forward(request, response);
         
     }

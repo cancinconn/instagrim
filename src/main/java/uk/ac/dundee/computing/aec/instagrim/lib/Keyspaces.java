@@ -25,7 +25,7 @@ public final class Keyspaces {
                     + " processed blob,"
                     + " imagelength int,"
                     + " thumblength int,"
-                    + "  processedlength int,"
+                    + " processedlength int,"
                     + " type  varchar,"
                     + " name  varchar,"
                     + " PRIMARY KEY (picid)"
@@ -50,9 +50,6 @@ public final class Keyspaces {
                     + "      addresses  map<text, frozen <address>>,\n"
                     + "      profilePicID uuid\n"
                     + "  );";
-
-            //TODO: Remove
-            //String Alteration = "      ALTER TABLE instagrim.userprofiles ADD profilePicID uuid;";
 
             Session session = c.connect();
             try {
@@ -99,18 +96,10 @@ public final class Keyspaces {
                 System.out.println("Can't create Address Profile " + et);
             }
 
-            //TODO: Remove
-            try {
-                //SimpleStatement cqlQuery = new SimpleStatement(Alteration);
-                //session.execute(cqlQuery);
-            } catch (Exception et) {
-                System.out.println("Can't create make alteration " + et);
-            }
-
             session.close();
 
         } catch (Exception et) {
-            System.out.println("Other keyspace or coulm definition error" + et);
+            System.out.println("Other keyspace or column definition error" + et);
         }
 
     }

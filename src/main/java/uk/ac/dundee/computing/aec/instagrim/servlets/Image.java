@@ -2,9 +2,11 @@ package uk.ac.dundee.computing.aec.instagrim.servlets;
 
 import com.datastax.driver.core.Cluster;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -150,7 +152,19 @@ public class Image extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        String title=null;
+        
         for (Part part : request.getParts()) {
+            
+            //keep continuing until we hit the image data
+            if (part.getName().equals("title"))
+            {
+                InputStream is = part.getInputStream();
+                title = readInputStream(is);
+                continue;
+            }
+            
             System.out.println("Part Name " + part.getName());
 
             String type = part.getContentType();
@@ -170,7 +184,7 @@ public class Image extends HttpServlet {
                 System.out.println("Length : " + b.length);
                 PicModel tm = new PicModel();
                 tm.setCluster(cluster);
-                tm.insertPic(b, type, filename, username);
+                tm.insertPic(b, type, filename, username, title);
 
                 is.close();
             }
@@ -188,5 +202,38 @@ public class Image extends HttpServlet {
         out.println("<h2>" + mess + "</h2>");
         out.close();
         return;
+    }
+    
+    private String readInputStream(InputStream is) throws IOException
+    {
+        String result = null;
+        
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+        
+        try {
+            String nextLine = null;
+            while ((nextLine = br.readLine()) != null)
+            {
+                //we now know we have lines to read, so make the result an empty string which we will append to.
+                if (result == null)
+                {
+                    result = "";
+                }
+                //append to result
+                result += nextLine + "<br>";
+            }
+        }
+        catch (IOException ex)
+        {
+            System.out.println("Exception occurred while reading stream: " + ex.getMessage());
+        }
+        finally
+        {
+            isr.close();
+            br.close();
+        }
+         
+        return result;
     }
 }

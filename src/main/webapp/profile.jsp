@@ -56,14 +56,14 @@
             <!-- Display Profile Picture -->
             
             <%
-                Pic profilePic = (Pic) request.getAttribute("profilePicture");
+                Pic profilePic = (Pic) request.getAttribute("profilePic");
                 if (profilePic == null) {
                 %>
                 <p class = "pageText">This user does not have a profile picture.</p>
                 <%
                 } else {
                 %>
-                <a href="/Instagrim/Image/<%=profilePic.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=profilePic.getSUUID()%>"></a><br/>
+                <a href="/Instagrim/Image/<%=profilePic.getSUUID()%>" ><img class = "profilePic"src="/Instagrim/Thumb/<%=profilePic.getSUUID()%>"></a><br/>
                 <%
                 }
             %>

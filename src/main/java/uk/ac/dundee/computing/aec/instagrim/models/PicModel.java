@@ -50,7 +50,7 @@ public class PicModel {
         this.cluster = cluster;
     }
 
-    public void insertPic(byte[] b, String type, String name, String user) {
+    public void insertPic(byte[] b, String type, String name, String user, String title) {
         try {
             Convertors convertor = new Convertors();
 
@@ -73,13 +73,13 @@ public class PicModel {
             int processedlength=processedb.length;
             Session session = cluster.connect("instagrim");
 
-            PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name) values(?,?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name,title) values(?,?,?,?,?,?,?,?,?,?,?,?)");
             PreparedStatement psInsertPicToUser = session.prepare("insert into userpiclist ( picid, user, pic_added) values(?,?,?)");
             BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
             BoundStatement bsInsertPicToUser = new BoundStatement(psInsertPicToUser);
 
             Date DateAdded = new Date();
-            session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name));
+            session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name, title));
             session.execute(bsInsertPicToUser.bind(picid, user, DateAdded));
             session.close();
 
@@ -163,6 +163,7 @@ public class PicModel {
         ByteBuffer bImage = null;
         String username = null;
         String type = null;
+        String title = null;
         int length = 0;
         try {
             Convertors convertor = new Convertors();
@@ -175,7 +176,7 @@ public class PicModel {
             } else if (image_type == Convertors.DISPLAY_THUMB) {
                 ps = session.prepare("select thumb,imagelength,thumblength,type from pics where picid =?");
             } else if (image_type == Convertors.DISPLAY_PROCESSED) {
-                ps = session.prepare("select user,processed,processedlength,type from pics where picid =?");
+                ps = session.prepare("select user,title,processed,processedlength,type from pics where picid =?");
             }
             BoundStatement boundStatement = new BoundStatement(ps);
             rs = session.execute( // this is where the query is executed
@@ -196,6 +197,7 @@ public class PicModel {
                 
                     } else if (image_type == Convertors.DISPLAY_PROCESSED) {
                         username = row.getString("user");
+                        title = row.getString("title");
                         bImage = row.getBytes("processed");
                         length = row.getInt("processedlength");
                     }
@@ -216,6 +218,14 @@ public class PicModel {
         if (username != null)
         {
             p.setUsername(username);
+        }
+        if (title != null)
+        {
+            p.setTitle(title);
+        }
+        else
+        {
+            p.setTitle("Picture");
         }
         
         return p;

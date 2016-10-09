@@ -72,6 +72,29 @@ public class User {
         return true;
     }
     
+    public UUID getProfilePicID(String username)
+    {
+        //find user's profilePicID given their username:
+        
+        Session session = cluster.connect("instagrim");
+        
+        PreparedStatement ps = session.prepare("SELECT profilePicID from userprofiles where login =?");
+        BoundStatement boundStatement = new BoundStatement(ps);
+        
+        ResultSet rs = null;
+        rs = session.execute( // this is where the query is executed
+                boundStatement.bind( // here you are binding the 'boundStatement'
+                         username));
+
+        //we expect only one row
+        for (Row row : rs) {
+                UUID picID = (row.getUUID("profilePicID"));
+                return picID;
+        }
+        
+        return null;
+    }
+    
     public boolean updateDetails(String userName, String password, String firstName, String lastName)
     {
         

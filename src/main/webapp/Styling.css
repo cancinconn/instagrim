@@ -189,6 +189,15 @@ nav li a:hover {
     
 }
 
+.centerDivTitleNoBG {
+    margin:auto;
+    width:400px;
+    height:40px;
+    
+    padding: 20px; 
+    
+}
+
 .leftDiv {
     float:left;
 }
@@ -215,8 +224,11 @@ p{
 }
 
 .pageText{
+    display:block;
+    margin: auto;
     color: black;
     font-family: "Verdana";
+    text-align: center;
 }
 
 .pLeft{
@@ -231,4 +243,14 @@ p{
     font-family: "Verdana";
     float:right;
     clear:right;
+}
+
+.profilePic {
+    display:block;
+    margin: auto;
+}
+
+.Pic {
+    display:block;
+    margin: auto;
 }
