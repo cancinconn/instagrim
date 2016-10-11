@@ -82,7 +82,7 @@
                 
             <%} else {%>
             
-            <p class = "pageText">Sign in to post comments on pictures.</p> <br>
+            <p class = "pageText"><a href="${pageContext.request.contextPath}/login.jsp">Log in</a> to post comments on pictures!</p> <br> <br>
             
             <% } %>
         
@@ -104,6 +104,7 @@
             <% for (int i=0; i<comments.size(); i++)
             {%>
             <p class = "pageText"><%=comments.get(i).getAuthor()%>: <%=comments.get(i).getCommentText()%> (<%=comments.get(i).getTime().toString() %>)</p>
+            <br>
             <%}%>
             
 

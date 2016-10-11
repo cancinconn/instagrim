@@ -78,8 +78,8 @@ public class CommentModel {
             
             String comment = row.getString("comment");
             String username = row.getString("username");
-            //TODO: Fix this and specify the actual time by finding out what causes the error when the Date class is used
-            String time = "Some time ago";//row.getTimestamp("time").toString();
+
+            String time = row.getTimestamp("time").toString();
             
             comments.add(new Comment(comment, username, time));
         }

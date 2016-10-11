@@ -154,7 +154,7 @@ nav li a:hover {
     float: left;
     background-color: #555;
     color: white;
-    /* text-decoration: none; */
+    text-decoration: none;
 }
 
 .liRight {
