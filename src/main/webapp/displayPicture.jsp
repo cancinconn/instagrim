@@ -53,7 +53,63 @@
         <%  }
         }%>
         
-         <%} //End of page display logic %>
+        <!-- Display Comment Box if logged in -->
+        <% //determine if the user is logged in
+        boolean isLoggedIn = false;
+        if (lg != null)
+        {
+            if (lg.getLoggedIn())
+            {
+                isLoggedIn = true;
+            }else{
+                isLoggedIn = false;
+            }
+        } else {
+            isLoggedIn = false;
+        }
+        %>
+            
+            <% if (isLoggedIn) { %>
+                
+            <form method="POST"  action="${pageContext.request.contextPath}/PostComment/<%=pic.getSUUID()%>">
+                <div class="buttonDiv">
+                    <textarea rows="4" cols="50" name="comment"> </textarea>
+                </div>
+                <div class="buttonDiv">
+                    <input class="button" type="submit" value="Comment"> 
+                </div>
+            </form>
+                
+            <%} else {%>
+            
+            <p class = "pageText">Sign in to post comments on pictures.</p> <br>
+            
+            <% } %>
+        
+        <!-- DISPLAY COMMENTS -->
+        
+        <% 
+        LinkedList<Comment> comments = (LinkedList<Comment>)request.getAttribute("comments");
+        if (comments == null)
+        {
+        //PRESENTATION LOGIC FOR WHEN THERE ARE NO COMMENTS:
+        %>
+        
+            <p class = "pageText">There are no comments for this picture... :/ Why not write one?</p>
+        
+        <%}else{
+        //PRESENTATION LOGIC FOR COMMENTS:
+        %>
+
+            <% for (int i=0; i<comments.size(); i++)
+            {%>
+            <p class = "pageText"><%=comments.get(i).getAuthor()%>: <%=comments.get(i).getCommentText()%> (<%=comments.get(i).getTime().toString() %>)</p>
+            <%}%>
+            
+
+        <%}%>
+        
+        <%} //End of page display logic %>
         
 
         

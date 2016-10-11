@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -27,8 +29,10 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
+import uk.ac.dundee.computing.aec.instagrim.models.CommentModel;
 import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
+import uk.ac.dundee.computing.aec.instagrim.stores.Comment;
 import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
 import uk.ac.dundee.computing.aec.instagrim.stores.UserDetails;
@@ -106,7 +110,6 @@ public class Image extends HttpServlet {
     
     protected void ForwardToImagePage(int imageType, HttpServletRequest request, HttpServletResponse response, String uuid) throws ServletException, IOException {
         
-        //get image uuid to be displayed on the page
         Pic pic = null;
         
         //get the Pic object for the uuid
@@ -114,10 +117,14 @@ public class Image extends HttpServlet {
         picModel.setCluster(cluster);
         pic = picModel.getPic(imageType, UUID.fromString(uuid));
         
+        //get the list of comments to be displayed on the page from the CommentModel
+        CommentModel commentModel = new CommentModel(cluster);
+        LinkedList<Comment> comments = commentModel.getComments(uuid);
         
         //then send the user off to the page, with the pic passed as an attribute
         RequestDispatcher rd = request.getRequestDispatcher("/displayPicture.jsp");
         request.setAttribute("pic", pic);
+        request.setAttribute("comments", comments);
         rd.forward(request, response);
         
     }

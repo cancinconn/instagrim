@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.UUID;
 import javax.imageio.ImageIO;
 import static org.imgscalr.Scalr.*;
 import org.imgscalr.Scalr.Method;
@@ -156,6 +157,33 @@ public class PicModel {
             }
         }
         return Pics;
+    }
+    
+    public boolean doesPictureExist(UUID picUUID)
+    {
+        Session session = cluster.connect("instagrim");
+        
+        ResultSet rs = null;
+        PreparedStatement ps = null;
+        ps = session.prepare("SELECT picid from pics where picid = ? LIMIT 1"); //only need to find 1 matching picid to see if it exists, no use wasting time trying to find another
+        BoundStatement boundStatement = new BoundStatement(ps);
+        
+            rs = session.execute( // this is where the query is executed
+                    boundStatement.bind( // here you are binding the 'boundStatement'
+                            picUUID));
+
+            if (rs.isExhausted()) {
+                return false;
+            } else {
+                return true;
+            }
+    }
+    
+    //Alternative overload where picID is in string format.
+    public boolean doesPictureExist(String picUUID)
+    {
+        return doesPictureExist(UUID.fromString(picUUID));
+
     }
 
     public Pic getPic(int image_type, java.util.UUID picid) {
