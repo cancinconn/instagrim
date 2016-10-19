@@ -32,7 +32,7 @@
             java.util.LinkedList<Pic> lsPics = (java.util.LinkedList<Pic>) request.getAttribute("Pics");
             if (lsPics == null) {
         %>
-        <p>No Pictures found</p>
+        <p class="pageText">No Pictures found</p>
         <%
         } else {
 

@@ -70,8 +70,45 @@ public class Login extends HttpServlet {
 	    rd.forward(request,response);
             
         }else{
-            response.sendRedirect("/Instagrim/login.jsp");
+            //TODO: Forward using RequestDispatcher instead
+            response.sendRedirect("/Instagrim/Login");
         }
+        
+    }
+    
+     /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        boolean isUserLoggedIn = false;
+        LoggedIn lg = (LoggedIn) request.getAttribute("LoggedIn");
+        if (lg != null)
+        {
+            if(lg.getLoggedIn())
+            {
+                isUserLoggedIn = true;
+            }
+        }
+        
+        if (isUserLoggedIn)
+        {
+            //TODO: Show error page saying the user is already logged in:
+            response.sendRedirect(request.getContextPath());
+        }
+        else
+        {
+            RequestDispatcher rd=request.getRequestDispatcher("login.jsp");
+	    rd.forward(request,response);
+        }
+        
         
     }
 

@@ -16,17 +16,27 @@ public class Comment {
     private String commentText;
     private String author;
     private String time;
+    private String profilePictureSUUID;
     
     public Comment(String commentText, String authorname, String time)
     {
         this.commentText = commentText;
         author = authorname;
         this.time = time;
+        profilePictureSUUID = null; //initialise to null, set later if found.
+    }
+    
+    public void setProfilePictureSUUID(String SUUID)
+    {
+        profilePictureSUUID = SUUID;
     }
     
     public String getCommentText()
     {
-        return commentText;
+        //process the string to have html-style line breaks.
+        String processedText = commentText;
+        processedText = processedText.replaceAll("\n", "<br>");
+        return processedText;
     }
     
     public String getAuthor()
@@ -39,4 +49,8 @@ public class Comment {
         return time;
     }
     
+    public String getProfilePictureSUUID()
+    {
+        return profilePictureSUUID;
+    }
 }

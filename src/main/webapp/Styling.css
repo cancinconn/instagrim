@@ -294,7 +294,7 @@ a:hover {
 }
 
 .button:hover{
-    background-color: #333333;
+    background-color: #006699;
     border: none;
     color: white;
     padding: 15px 32px;
@@ -304,4 +304,75 @@ a:hover {
     font-size: 16px;
     margin: 16px 2px;
     cursor: pointer;
+}
+
+.commentContainerDiv {
+    margin:auto;
+    width:800px;
+    text-align:center;
+    box-shadow: 2px 2px 2px #888888;
+    background-color: #666666;
+    min-height: 140px;
+    position:relative;
+    border: 1px solid #000000;
+
+}
+
+.commentLeftDiv {
+    margin:auto;
+    margin:5px;
+    width:100px;
+    text-align:center;
+    float:left;
+    height:140px; 
+}
+
+.commentPicDiv {
+    margin:auto;
+    width:100px;
+    height:100px; 
+    text-align:center;
+    float:left;
+    box-shadow: 0px 0px 2px #000000;
+    border: 1px solid #000000;
+}
+
+.commentTextDiv {
+    margin:auto;
+    padding-top: 5px;
+    width:700px;
+    text-align:center;
+    margin-bottom: 2px;
+    overflow-wrap: break-word;
+}
+
+.commentBottomDiv
+{
+    padding-right: 5px;
+    width:400px;
+    position:absolute;
+    bottom:0;
+    right: 0;
+}
+
+.commentSpaceDiv
+{
+    width:400px;
+    height:30px;
+}
+
+.commentTimeText{
+    display:block;
+    margin: auto;
+    color: black;
+    font-family: "Verdana";
+    font-size: 14px;
+    padding-bottom:2px;
+    font-style: italic;
+    text-align: right;
+}
+
+.commentPic{
+    width: 100px;
+    height: 100px;
 }

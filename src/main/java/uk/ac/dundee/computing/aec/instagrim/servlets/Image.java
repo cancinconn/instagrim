@@ -120,6 +120,7 @@ public class Image extends HttpServlet {
         //get the list of comments to be displayed on the page from the CommentModel
         CommentModel commentModel = new CommentModel(cluster);
         LinkedList<Comment> comments = commentModel.getComments(uuid);
+        commentModel.findAndSetProfilePictures(comments);
         
         //then send the user off to the page, with the pic passed as an attribute
         RequestDispatcher rd = request.getRequestDispatcher("/displayPicture.jsp");

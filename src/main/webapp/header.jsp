@@ -45,8 +45,8 @@
                 <%}
                 } else { //ıf not logged in:
                 %>
-            <li><a href="${pageContext.request.contextPath}/register.jsp">Register</a></li>
-            <li><a href="${pageContext.request.contextPath}/login.jsp">Login</a></li>
+            <li><a href="${pageContext.request.contextPath}/Register">Register</a></li>
+            <li><a href="${pageContext.request.contextPath}/Login">Login</a></li>
             </div> <!--close leftDiv -->
                 <%
                         }%>

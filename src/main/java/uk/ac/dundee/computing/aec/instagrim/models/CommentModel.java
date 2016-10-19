@@ -87,6 +87,34 @@ public class CommentModel {
         return comments;
         
     }
+    
+    public LinkedList<Comment> findAndSetProfilePictures(LinkedList<Comment> comments)
+    {
+        //Use the user model to get each user's profile picture and add its SUUID to the comment object.
+        User userModel = new User();
+        userModel.setCluster(cluster);
+        
+        if (comments != null)
+        {
+            for (Comment comment : comments) {
+            
+                String username = comment.getAuthor();
+                if (username != null)
+                {
+                    UUID picid = userModel.getProfilePicID(username);
+                    if (picid!=null)
+                    {
+                        comment.setProfilePictureSUUID(picid.toString());
+                    }
+                }
+            }
+        }
+        
+
+        
+        return comments;
+        
+    }
 
     
 }

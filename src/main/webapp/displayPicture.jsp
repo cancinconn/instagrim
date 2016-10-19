@@ -103,7 +103,27 @@
 
             <% for (int i=0; i<comments.size(); i++)
             {%>
-            <p class = "pageText"><%=comments.get(i).getAuthor()%>: <%=comments.get(i).getCommentText()%> (<%=comments.get(i).getTime().toString() %>)</p>
+            
+            <!-- div to contain comment -->
+            <div class="commentContainerDiv">
+                <div class="commentLeftDiv">
+                    <!-- profile picture -->
+                    <div class="commentPicDiv">
+                        <a href="${pageContext.request.contextPath}/Profile/<%=comments.get(i).getAuthor()%>" ><img class = "commentPic" src="${pageContext.request.contextPath}/Thumb/<%=comments.get(i).getProfilePictureSUUID()%>"></a>
+                    </div>
+                    <!-- comment author -->
+                    <p class = "pageText"><a href="${pageContext.request.contextPath}/Profile/<%=comments.get(i).getAuthor()%>"><%=comments.get(i).getAuthor()%></a></p>
+                </div>
+                <!-- comment -->
+                <div class="commentTextDiv">
+                    <p class = "pageText"><%=comments.get(i).getCommentText()%></p>
+                </div>
+                <div class="commentSpaceDiv"></div>
+                <!-- time -->
+                <div class="commentBottomDiv">
+                    <p class = "commentTimeText">(<%=comments.get(i).getTime().toString() %>)</p>
+                </div>
+            </div>
             <br>
             <%}%>
             

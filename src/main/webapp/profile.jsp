@@ -63,7 +63,7 @@
                 <%
                 } else {
                 %>
-                <a href="${pageContext.request.contextPath}/Image/<%=profilePic.getSUUID()%>" ><img class = "profilePic"src="${pageContext.request.contextPath}/Thumb/<%=profilePic.getSUUID()%>"></a><br/>
+                <a href="${pageContext.request.contextPath}/Image/<%=profilePic.getSUUID()%>" ><img class = "profilePic" src="${pageContext.request.contextPath}/Thumb/<%=profilePic.getSUUID()%>"></a><br/>
                 <%
                 }
             %>
