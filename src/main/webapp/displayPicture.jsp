@@ -82,7 +82,7 @@
                 
             <%} else {%>
             
-            <p class = "pageText"><a href="${pageContext.request.contextPath}/login.jsp">Log in</a> to post comments on pictures!</p> <br> <br>
+            <p class = "pageText"><a href="${pageContext.request.contextPath}/Login">Log in</a> to post comments on pictures!</p> <br> <br>
             
             <% } %>
         

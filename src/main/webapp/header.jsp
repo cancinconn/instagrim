@@ -24,7 +24,7 @@
             <p class="barText">Your world in black and white.</p>
         </a>
         <ul>
-            <li><a href="${pageContext.request.contextPath}/upload.jsp">Upload</a></li>
+            <li><a href="${pageContext.request.contextPath}/Upload">Upload</a></li>
                 <%
                     LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");
                     if (lg != null) {
@@ -54,4 +54,7 @@
     </div>
 </nav>
 
-<!-- TODO: Avoid form resubmission on refresh (eg: after login) -->
+</head>
+
+<!-- Show any messages for the user -->
+<%@ include file="notifications.jsp" %>

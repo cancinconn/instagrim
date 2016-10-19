@@ -72,7 +72,6 @@ public class Image extends HttpServlet {
     }
 
     public void init(ServletConfig config) throws ServletException {
-        // TODO Auto-generated method stub
         cluster = CassandraHosts.getCluster();
     }
 
@@ -173,48 +172,7 @@ public class Image extends HttpServlet {
         out.close();
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
-        String title=null;
-        
-        for (Part part : request.getParts()) {
-            
-            //keep continuing until we hit the image data
-            if (part.getName().equals("title"))
-            {
-                InputStream is = part.getInputStream();
-                title = readInputStream(is);
-                continue;
-            }
-            
-            System.out.println("Part Name " + part.getName());
 
-            String type = part.getContentType();
-            String filename = part.getSubmittedFileName();
-            
-            InputStream is = request.getPart(part.getName()).getInputStream();
-            int i = is.available();
-            HttpSession session=request.getSession();
-            LoggedIn lg= (LoggedIn)session.getAttribute("LoggedIn");
-            String username="majed"; // TODO: Figure out why there is a hard coded name here - also note this is the same name as the sample images
-            if (lg.getLoggedIn()){
-                username=lg.getUsername();
-            }
-            if (i > 0) {
-                byte[] b = new byte[i + 1];
-                is.read(b);
-                System.out.println("Length : " + b.length);
-                PicModel tm = new PicModel();
-                tm.setCluster(cluster);
-                tm.insertPic(b, type, filename, username, title);
-
-                is.close();
-            }
-            RequestDispatcher rd = request.getRequestDispatcher("/upload.jsp");
-             rd.forward(request, response);
-        }
-
-    }
 
     private void error(String mess, HttpServletResponse response) throws ServletException, IOException {
 
@@ -223,39 +181,8 @@ public class Image extends HttpServlet {
         out.println("<h1>You have an error in your input</h1>");
         out.println("<h2>" + mess + "</h2>");
         out.close();
-        return;
+
     }
     
-    private String readInputStream(InputStream is) throws IOException
-    {
-        String result = null;
-        
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
-        
-        try {
-            String nextLine = null;
-            while ((nextLine = br.readLine()) != null)
-            {
-                //we now know we have lines to read, so make the result an empty string which we will append to.
-                if (result == null)
-                {
-                    result = "";
-                }
-                //append to result
-                result += nextLine + "<br>";
-            }
-        }
-        catch (IOException ex)
-        {
-            System.out.println("Exception occurred while reading stream: " + ex.getMessage());
-        }
-        finally
-        {
-            isr.close();
-            br.close();
-        }
-         
-        return result;
-    }
+    
 }

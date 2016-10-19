@@ -17,14 +17,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
+import uk.ac.dundee.computing.aec.instagrim.lib.NotificationWriter;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
 import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
+import uk.ac.dundee.computing.aec.instagrim.stores.Notification;
 
 /**
  *
  * @author Administrator
  */
-@WebServlet(name = "Register", urlPatterns = {"/Register"})
+@WebServlet(name = "Register", urlPatterns = {"/Register", "/register"})
 public class Register extends HttpServlet {
     Cluster cluster=null;
     public void init(ServletConfig config) throws ServletException {
@@ -51,10 +53,15 @@ public class Register extends HttpServlet {
         String firstName=request.getParameter("fname");
         String lastName=request.getParameter("lname");
         
-        //Error check
-        if (username == null || password == null)
+        //Do Input validation:
+        if (username == null || username.equals("") || password == null || password.equals(""))
         {
-            //TODO: Handle NULL username and/or password
+            
+            //Write error message:
+            NotificationWriter.writeNotification("Please ensure that your username or password field is not empty!", Notification.NotificationType.ERROR, request);
+
+            response.sendRedirect(request.getContextPath()+"/Register");
+            return; //return so that we do not process this request.
         }
         
         User user=new User();
@@ -62,7 +69,7 @@ public class Register extends HttpServlet {
         user.registerUser(username, password);
         user.updateDetails(username, password, firstName, lastName);
         
-	response.sendRedirect(request.getContextPath());
+	Login.loginSession(username, password, request, response, cluster, true);
         
     }
     

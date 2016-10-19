@@ -3,32 +3,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package uk.ac.dundee.computing.aec.instagrim.filters;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import javax.servlet.DispatcherType;
+import java.util.LinkedList;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
+import uk.ac.dundee.computing.aec.instagrim.stores.Notification;
 
 /**
  *
- * @author Administrator
+ * @author Can
  */
-@WebFilter(filterName = "ProtectPages", urlPatterns = {"/upload.jsp", "/Upload", "/upload"}, dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE})
-public class ProtectPages implements Filter {
+@WebFilter(filterName = "NotificationFilter", urlPatterns = {"/*"})
+public class NotificationFilter implements Filter {
     
     private static final boolean debug = true;
 
@@ -37,60 +35,78 @@ public class ProtectPages implements Filter {
     // configured. 
     private FilterConfig filterConfig = null;
     
-    public ProtectPages() {
+    public NotificationFilter() {
     }    
     
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("ProtectPages:DoBeforeProcessing");
+            log("NotificationFilter:DoBeforeProcessing");
         }
 
-	// Write code here to process the request and/or response before
+        // Write code here to process the request and/or response before
         // the rest of the filter chain is invoked.
-	// For example, a logging filter might log items on the request object,
+        // For example, a logging filter might log items on the request object,
         // such as the parameters.
-	/*
-         for (Enumeration en = request.getParameterNames(); en.hasMoreElements(); ) {
-         String name = (String)en.nextElement();
-         String values[] = request.getParameterValues(name);
-         int n = values.length;
-         StringBuffer buf = new StringBuffer();
-         buf.append(name);
-         buf.append("=");
-         for(int i=0; i < n; i++) {
-         buf.append(values[i]);
-         if (i < n-1)
-         buf.append(",");
-         }
-         log(buf.toString());
-         }
+        /*
+	for (Enumeration en = request.getParameterNames(); en.hasMoreElements(); ) {
+	    String name = (String)en.nextElement();
+	    String values[] = request.getParameterValues(name);
+	    int n = values.length;
+	    StringBuffer buf = new StringBuffer();
+	    buf.append(name);
+	    buf.append("=");
+	    for(int i=0; i < n; i++) {
+	        buf.append(values[i]);
+	        if (i < n-1)
+	            buf.append(",");
+	    }
+	    log(buf.toString());
+	}
          */
     }    
     
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("ProtectPages:DoAfterProcessing");
+            log("NotificationFilter:DoAfterProcessing");
         }
 
-	// Write code here to process the request and/or response after
-        // the rest of the filter chain is invoked.
-	// For example, a logging filter might log the attributes on the
-        // request object after the request has been processed. 
-	/*
-         for (Enumeration en = request.getAttributeNames(); en.hasMoreElements(); ) {
-         String name = (String)en.nextElement();
-         Object value = request.getAttribute(name);
-         log("attribute: " + name + "=" + value.toString());
+        //Notifications are stored in the session since using POST-REDIRECT-GET disallows us from simply forwarding them to the views.
+        //I decided I either had to do session-scope notifications or use parameters that describe what error is to be displayed. A pre-set list of errors specified by ID in the URL seems cumbersome to me and would ruin the clean URL.
+        //A full error written out in the URL is less cumbersome but is potentially a bad idea since cross-site scripting attacks could be done very easily.
+        //Hence I decided to have session-scope notifications - I use this filter to ensure that the notifications are removed after being displayed.
+        
+        //if this is a http request and is of the GET method, then remove the notification (we assume that errors have now been displayed since they did a GET, and none have been created since they only viewed a page, not submitted any data)
+        if (request.getScheme().equalsIgnoreCase("HTTP") || request.getScheme().equalsIgnoreCase("HTTPS"))
+        {
+            if (((HttpServletRequest)request).getMethod().equalsIgnoreCase("GET"))
+            {
+                HttpSession session=((HttpServletRequest)request).getSession(); 
+                LinkedList<Notification> notifications = (LinkedList<Notification>) session.getAttribute("notifications");
+                if (notifications != null)
+                {
+                    for (Notification note : notifications)
+                    {
+                        note.decrementExpirationCounter();
+                        if (note.getExpirationCounter() <= 0)
+                        {
+                            notifications.remove(note);
+                        }
+                    }
+                    
+                    if (notifications.isEmpty())
+                    {
+                        session.removeAttribute("notifications");
+                    }
+                    
+                    
+                    System.out.println("Removed notifications.");
+                }
+            }
 
-         }
-         */
-	// For example, a filter might append something to the response.
-	/*
-         PrintWriter respOut = new PrintWriter(response.getWriter());
-         respOut.println("<P><B>This has been appended by an intrusive filter.</B>");
-         */
+        }
+
     }
 
     /**
@@ -107,27 +123,16 @@ public class ProtectPages implements Filter {
             throws IOException, ServletException {
         
         if (debug) {
-            log("ProtectPages:doFilter()");
+            log("NotificationFilter:doFilter()");
         }
         
         doBeforeProcessing(request, response);
-        System.out.println("Doing filter");
-        HttpServletRequest httpReq = (HttpServletRequest) request;
-        HttpSession session=httpReq.getSession(false);
-	LoggedIn li=(LoggedIn)session.getAttribute("LoggedIn");
-        System.out.println("Session in filter "+session);
-        if ((li == null)  || (li.getLoggedIn()==false)){
-               System.out.println("Foward to login");
-                RequestDispatcher rd=request.getRequestDispatcher("/login.jsp");
-		rd.forward(request,response);
-
-            
-        }
+        
         Throwable problem = null;
         try {
             chain.doFilter(request, response);
         } catch (Throwable t) {
-	    // If an exception is thrown somewhere down the filter chain,
+            // If an exception is thrown somewhere down the filter chain,
             // we still want to execute our after processing, and then
             // rethrow the problem after that.
             problem = t;
@@ -136,7 +141,7 @@ public class ProtectPages implements Filter {
         
         doAfterProcessing(request, response);
 
-	// If there was a problem, we want to rethrow it if it is
+        // If there was a problem, we want to rethrow it if it is
         // a known type, otherwise log it.
         if (problem != null) {
             if (problem instanceof ServletException) {
@@ -178,7 +183,7 @@ public class ProtectPages implements Filter {
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {                
-                log("ProtectPages:Initializing filter");
+                log("NotificationFilter:Initializing filter");
             }
         }
     }
@@ -189,9 +194,9 @@ public class ProtectPages implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("ProtectPages()");
+            return ("NotificationFilter()");
         }
-        StringBuffer sb = new StringBuffer("ProtectPages(");
+        StringBuffer sb = new StringBuffer("NotificationFilter(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());

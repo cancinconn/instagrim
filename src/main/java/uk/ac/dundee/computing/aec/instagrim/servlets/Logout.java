@@ -12,6 +12,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import uk.ac.dundee.computing.aec.instagrim.lib.NotificationWriter;
+import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
+import uk.ac.dundee.computing.aec.instagrim.stores.Notification;
 
 /**
  *
@@ -32,10 +35,29 @@ public class Logout extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        boolean isLoggedIn = false;
+        LoggedIn lg = (LoggedIn) request.getSession().getAttribute("LoggedIn");
+        if (lg != null)
+        {
+            if (lg.getLoggedIn())
+            {
+                isLoggedIn = true;
+            }
+        }
         
-        //log out, then redirect to front page:
+
+        
+        //log out
         request.getSession().removeAttribute("LoggedIn");
-        
+
+        //Let the user know they've logged out:
+        if (isLoggedIn) {
+            NotificationWriter.writeNotification("You have been logged out successfully.", Notification.NotificationType.INFO, request, true);
+        } else {
+            NotificationWriter.writeNotification("You cannot log out as you are not currently logged in.", Notification.NotificationType.INFO, request, true);
+        }
+
+        // then redirect to front page (not forward, to avoid resubmission)
         response.sendRedirect(request.getContextPath());
 
     }

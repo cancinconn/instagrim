@@ -12,12 +12,6 @@
     <%@ include file="header.jsp" %>
     
     <body>
-        <nav>
-            <ul>
-                <li class="nav"><a href="${pageContext.request.contextPath}/upload.jsp">Upload</a></li>
-                <li class="nav"><a href="${pageContext.request.contextPath}/Images/majed">Sample Images</a></li>
-            </ul>
-        </nav>
  
         <article>
             <h3>File Upload</h3>

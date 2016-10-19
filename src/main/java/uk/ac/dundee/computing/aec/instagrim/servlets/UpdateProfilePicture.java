@@ -70,6 +70,7 @@ public class UpdateProfilePicture extends HttpServlet {
         }
         else
         {
+            //TODO: Show error page instead
             response.sendRedirect(request.getContextPath()+"/Image/"+picUUID);
         }
 

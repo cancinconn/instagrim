@@ -376,3 +376,38 @@ a:hover {
     width: 100px;
     height: 100px;
 }
+
+.notificationInfoDiv {
+    margin:auto;
+    width:800px;
+    text-align:center;
+    box-shadow: 2px 2px 2px #888888;
+    background-color: #e8e8e8;
+    min-height: 20px;
+    position:relative;
+    border: 1px solid #000000;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.notificationErrorDiv {
+    margin:auto;
+    width:800px;
+    text-align:center;
+    box-shadow: 2px 2px 2px #888888;
+    background-color: #ff9999;
+    min-height: 20px;
+    position:relative;
+    border: 1px solid #000000;
+    
+        margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.notificationText{
+
+    margin: auto;
+    color: black;
+    font-family: "Verdana";
+    text-align: center;
+}

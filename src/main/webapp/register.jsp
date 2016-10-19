@@ -15,11 +15,6 @@
         <h1>InstaGrim ! </h1>
         <h2>Your world in Black and White</h2>
         </header>
-        <nav>
-            <ul>
-                <li><a href="${pageContext.request.contextPath}/Images/majed">Sample Images</a></li>
-            </ul>
-        </nav>
        
         <article>
             <h3>Register as user</h3>
