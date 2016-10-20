@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,14 +22,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
+import uk.ac.dundee.computing.aec.instagrim.lib.NotificationWriter;
 import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
+import uk.ac.dundee.computing.aec.instagrim.models.PicModel.FilterTypes;
 import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
+import uk.ac.dundee.computing.aec.instagrim.stores.Notification;
 
 /**
  *
  * @author Can
  */
 @WebServlet(name = "Upload", urlPatterns = {"/Upload", "/upload"})
+@MultipartConfig
 public class Upload extends HttpServlet {
 
     private Cluster cluster;
@@ -55,47 +60,107 @@ public class Upload extends HttpServlet {
         
     }
 
-    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         String title=null;
+        String filter = null;
+        FilterTypes filterType = FilterTypes.INVALID;
+        InputStream is;
+        InputStream imageInputStream = null;
+        String type = null;
+        String filename = null;
+        int i = 0;
         
+        //get all parts of the multipart form
         for (Part part : request.getParts()) {
             
             //keep continuing until we hit the image data
             if (part.getName().equals("title"))
             {
-                InputStream is = part.getInputStream();
+                is = part.getInputStream();
                 title = readInputStream(is);
                 continue;
             }
-            
-            System.out.println("Part Name " + part.getName());
+            if (part.getName().equals("filter"))
+            {
+                is = part.getInputStream();
+                filter = readInputStream(is);
+                System.out.println("Found filter type: " + filter);
+                if (filter.equals("grim"))
+                {
+                    filterType = FilterTypes.GRIM;
+                } else if (filter.equals("invert"))
+                {
+                    filterType = FilterTypes.INVERTED;
+                } else if (filter.equals("gbr"))
+                {
+                    filterType = FilterTypes.GBR;
+                } else if (filter.equals("none"))
+                {
+                    filterType = FilterTypes.NONE;
+                } else if (filter.equals("lowdepth"))
+                {
+                    filterType = FilterTypes.LOWBITDEPTH;
+                }
+                
+                continue;
+            }
+            if (part.getName().equals("upfile"))
+            {
+                System.out.println("Part Name " + part.getName());
 
-            String type = part.getContentType();
-            String filename = part.getSubmittedFileName();
+                type = part.getContentType();
+                filename = part.getSubmittedFileName();
+
+                imageInputStream = request.getPart(part.getName()).getInputStream();
+                
+                continue;
+            }
+           
+        }
+        
+        
+         
+            //error checks, input validation:
+            if (title == null || title == "" || filterType == FilterTypes.INVALID)
+            {
+                NotificationWriter.writeNotification("Image could not be uploaded. Make sure you give the image a title.", Notification.NotificationType.ERROR, request);
+                response.sendRedirect(request.getContextPath()+"/Upload");
+                return;
+            }
             
-            InputStream is = request.getPart(part.getName()).getInputStream();
-            int i = is.available();
+            //Further error checks
+            if (imageInputStream != null && filename != null && type != null)
+            {
+                i = imageInputStream.available();
+            }
+            else
+            {
+                NotificationWriter.writeNotification("Image could not be uploaded. Make sure you choose an image to upload.", Notification.NotificationType.ERROR, request);
+                response.sendRedirect(request.getContextPath()+"/Upload");
+                return;
+            }
+            
+            
             HttpSession session=request.getSession();
             LoggedIn lg= (LoggedIn)session.getAttribute("LoggedIn");
-            String username="majed"; // TODO: Figure out why there is a hard coded name here - also note this is the same name as the sample images
+            String username=null;
             if (lg.getLoggedIn()){
                 username=lg.getUsername();
             }
             if (i > 0) {
                 byte[] b = new byte[i + 1];
-                is.read(b);
+                imageInputStream.read(b);
                 System.out.println("Length : " + b.length);
                 PicModel tm = new PicModel();
                 tm.setCluster(cluster);
-                tm.insertPic(b, type, filename, username, title);
+                tm.insertPic(b, type, filename, username, title, filterType);
 
-                is.close();
+                imageInputStream.close();
             }
-            RequestDispatcher rd = request.getRequestDispatcher("/upload.jsp");
-             rd.forward(request, response);
-        }
+            
+            NotificationWriter.writeNotification("Your picture has been uploaded successfully.", Notification.NotificationType.INFO, request);
+            response.sendRedirect(request.getContextPath() + "/Upload");
 
     }
     
@@ -113,10 +178,14 @@ public class Upload extends HttpServlet {
                 //we now know we have lines to read, so make the result an empty string which we will append to.
                 if (result == null)
                 {
-                    result = "";
+                    result = nextLine;
                 }
-                //append to result
-                result += nextLine + "<br>";
+                else
+                {
+                    //append to result
+                    result += nextLine + "<br>";
+                }
+
             }
         }
         catch (IOException ex)

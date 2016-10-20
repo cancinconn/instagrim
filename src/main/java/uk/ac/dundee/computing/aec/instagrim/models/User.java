@@ -98,7 +98,7 @@ public class User {
     public boolean updateDetails(String userName, String password, String firstName, String lastName)
     {
         
-        if (!IsValidUser(userName, password))
+        if (!isValidUser(userName, password))
         {
             return false;
         }
@@ -119,7 +119,33 @@ public class User {
                 
     }
     
-    public boolean IsValidUser(String username, String password){
+    
+    public boolean isUsernameAvailable(String username){
+        
+        //Do Input validation:
+        if (username == null || username.equals(""))
+        {
+            return false;
+        }
+        
+        Session session = cluster.connect("instagrim");
+        PreparedStatement ps = session.prepare("select login from userprofiles where login =?");
+        ResultSet rs = null;
+        BoundStatement boundStatement = new BoundStatement(ps);
+        rs = session.execute( // this is where the query is executed
+                boundStatement.bind( // here you are binding the 'boundStatement'
+                        username));
+        if (rs.isExhausted()) {
+            // no user returned, name is available!
+            return true;
+        } else {
+            //we got a row back, so the user exists already.
+            return false;
+        }
+    }
+    
+    
+    public boolean isValidUser(String username, String password){
         
         //Do Input validation:
         if (username == null || username.equals("") || password == null || password.equals(""))
@@ -143,7 +169,7 @@ public class User {
                 boundStatement.bind( // here you are binding the 'boundStatement'
                         username));
         if (rs.isExhausted()) {
-            System.out.println("No Images returned"); //TODO: Figure out if this is actually about images or password being returned
+            //no password returned, wrong username.
             return false;
         } else {
             for (Row row : rs) {

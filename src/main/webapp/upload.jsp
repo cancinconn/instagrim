@@ -14,22 +14,37 @@
     <body>
  
         <article>
-            <h3>File Upload</h3>
-            <form method="POST" enctype="multipart/form-data" action="Image">
-                
-                <li>Picture Title: <input type="text" name="title"></li>
-                
-                File to upload: <input type="file" name="upfile"><br/>
 
-                <br/>
-                <input type="submit" value="Press"> to upload the file!
+            <br>
+            
+            <form method="POST" enctype="multipart/form-data" action="Upload">
+                <div class="centerDiv2">
+                    <div class="rightInlineDiv">
+                        <p class = "pageTextInline">Picture Title: <input type="text" name="title"></p>
+                    </div>
+                </div>
+                <div class="centerDiv2">
+                    <div class="rightInlineDiv">
+                        <p class = "pageTextInline"> Filter: </p> 
+                        <select name="filter">
+                        <option value="grim">Instagrim</option>
+                        <option value="none">Instaplain</option>
+                        <option value="invert">Invertagram</option>
+                        <option value="gbr">Instaswap</option>
+                        <option value="lowdepth">Retrogram</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="centerDiv2">
+                    <div class="rightInlineDiv">
+                        <p class = "pageTextInline"> File to upload:</p> <input type="file" name="upfile">
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                <input type="submit" value="Press"> <p class = "pageTextInline"> to upload the file! </p>
+                </div>
             </form>
 
         </article>
-        <footer>
-            <ul>
-                <li class="footer"><a href="${pageContext.request.contextPath}">Home</a></li>
-            </ul>
-        </footer>
     </body>
 </html>

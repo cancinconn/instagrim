@@ -19,6 +19,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.utils.Bytes;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,6 +41,17 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
 //import uk.ac.dundee.computing.aec.stores.TweetStore;
 
 public class PicModel {
+    
+    public enum FilterTypes
+    {
+        GRIM,
+        INVERTED,
+        THUMB,
+        NONE,
+        GBR,
+        LOWBITDEPTH,
+        INVALID
+    }
 
     Cluster cluster;
 
@@ -51,7 +63,7 @@ public class PicModel {
         this.cluster = cluster;
     }
 
-    public void insertPic(byte[] b, String type, String name, String user, String title) {
+    public void insertPic(byte[] b, String type, String name, String user, String title, FilterTypes filterType) {
         try {
             Convertors convertor = new Convertors();
 
@@ -61,17 +73,25 @@ public class PicModel {
             java.util.UUID picid = convertor.getTimeUUID();
             
             //TODO: Look into this:
-            //The following is a quick and dirty way of doing this, will fill the disk quickly !
+            //The following is a quick and dirty way of doing this, will fill the disk quickly!
             Boolean success = (new File("/var/tmp/instagrim/")).mkdirs();
             FileOutputStream output = new FileOutputStream(new File("/var/tmp/instagrim/" + picid));
 
             output.write(b);
-            byte []  thumbb = picresize(picid.toString(),types[1]);
-            int thumblength= thumbb.length;
-            ByteBuffer thumbbuf=ByteBuffer.wrap(thumbb);
-            byte[] processedb = picdecolour(picid.toString(),types[1]);
+            
+            System.out.println("APPLYING FILTER: " + filterType.toString());
+            
+            //process and get byte array:
+            byte[] processedb = getPictureBytes(picid.toString(), types[1], processPicture(picid.toString(),types[1], filterType));
             ByteBuffer processedbuf=ByteBuffer.wrap(processedb);
             int processedlength=processedb.length;
+            
+            //process with filter, then process again to get thumbnail, and finally get byte array:
+            byte [] thumbb = getPictureBytes(picid.toString(), types[1], processPicture(FilterTypes.THUMB, processPicture(picid.toString(),types[1], filterType) ) );
+            int thumblength= thumbb.length;
+            ByteBuffer thumbbuf=ByteBuffer.wrap(thumbb);
+            
+
             Session session = cluster.connect("instagrim");
 
             PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name,title) values(?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -87,6 +107,97 @@ public class PicModel {
         } catch (IOException ex) {
             System.out.println("Error --> " + ex);
         }
+    }
+    
+    //This method pre-processes the picture before it is turned into a byte-array.
+    public BufferedImage processPicture(String picid, String type, FilterTypes filterType) {
+        try {
+            BufferedImage BI = ImageIO.read(new File("/var/tmp/instagrim/" + picid));
+            BufferedImage processedImage;
+
+            switch (filterType) {
+                case GRIM:
+                    processedImage = createGrayscale(BI);
+                    break;
+                case INVERTED:
+                    processedImage = createInverted(BI);
+                    break;
+                case THUMB:
+                    processedImage = createThumbnail(BI);
+                    break;
+                case GBR:
+                    processedImage = createGBR(BI);
+                    break;
+                case NONE:
+                    processedImage = createPlain(BI);
+                    break;
+                case LOWBITDEPTH:
+                    processedImage = createLowDepth(BI);
+                    break;
+                default:
+                    processedImage = createGrayscale(BI);
+                    break;
+            }
+
+            return processedImage;
+        } catch (IOException et) {
+
+        }
+        return null;
+    }
+
+    //This method pre-processes the picture before it is turned into a byte-array. (this 2nd overload allows chaining)
+    public BufferedImage processPicture(FilterTypes filterType, BufferedImage srcImage) {
+        try {
+            BufferedImage BI = srcImage;
+            BufferedImage processedImage;
+
+            switch (filterType) {
+                case GRIM:
+                    processedImage = createGrayscale(BI);
+                    break;
+                case INVERTED:
+                    processedImage = createInverted(BI);
+                    break;
+                case THUMB:
+                    processedImage = createThumbnail(BI);
+                    break;
+                case GBR:
+                    processedImage = createGBR(BI);
+                    break;
+                case NONE:
+                    processedImage = createPlain(BI);
+                    break;
+                case LOWBITDEPTH:
+                    processedImage = createLowDepth(BI);
+                    break;
+                default:
+                    processedImage = createGrayscale(BI);
+                    break;
+            }
+
+            return processedImage;
+        } catch (Exception et) {
+
+        }
+        return null;
+    }
+    
+    public byte[] getPictureBytes (String picid,String type, BufferedImage srcImage) {
+        try {
+            BufferedImage processedImage = srcImage;
+            
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(processedImage, type, baos);
+            baos.flush();
+            
+            byte[] imageInByte = baos.toByteArray();
+            baos.close();
+            return imageInByte;
+        } catch (IOException et) {
+
+        }
+        return null;
     }
 
     public byte[] picresize(String picid,String type) {
@@ -109,7 +220,7 @@ public class PicModel {
     public byte[] picdecolour(String picid,String type) {
         try {
             BufferedImage BI = ImageIO.read(new File("/var/tmp/instagrim/" + picid));
-            BufferedImage processed = createProcessed(BI);
+            BufferedImage processed = createGrayscale(BI);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(processed, type, baos);
             baos.flush();
@@ -123,15 +234,116 @@ public class PicModel {
     }
 
     public static BufferedImage createThumbnail(BufferedImage img) {
-        img = resize(img, Method.SPEED, 250, OP_ANTIALIAS, OP_GRAYSCALE);
+        //img = resize(img, Method.SPEED, 250, OP_ANTIALIAS, OP_GRAYSCALE);
+        img = resize(img, Method.SPEED, 250, OP_ANTIALIAS);
         // Let's add a little border before we return result.
-        return pad(img, 2);
+        //return pad(img, 2);
+        // Change of plan - Let's not.
+        return img;
     }
     
-   public static BufferedImage createProcessed(BufferedImage img) {
+   public static BufferedImage createGrayscale(BufferedImage img) {
         int Width=img.getWidth()-1;
         img = resize(img, Method.SPEED, Width, OP_ANTIALIAS, OP_GRAYSCALE);
-        return pad(img, 4);
+        //return pad(img, 4);
+        return img;
+    }
+   
+    public static BufferedImage createInverted(BufferedImage img) {
+        
+        for (int x = 0; x<img.getWidth()-1; x++)
+        {
+            for (int y = 0; y<img.getHeight()-1; y++)
+            {
+                //get colors as separate components, invert, then set.
+                int red = new Color(img.getRGB(x, y)).getRed();
+                int green = new Color(img.getRGB(x, y)).getGreen();
+                int blue = new Color(img.getRGB(x, y)).getBlue();
+                
+                int outputRGB = new Color(255-red, 255-green, 255-blue).getRGB();
+                
+                img.setRGB(x, y, outputRGB);
+            }
+        }
+        
+        return img;
+    }
+    
+    public static BufferedImage createGBR(BufferedImage img) {
+        
+        for (int x = 0; x<img.getWidth()-1; x++)
+        {
+            for (int y = 0; y<img.getHeight()-1; y++)
+            {
+                //get colors as separate components, invert, then set.
+                int red = new Color(img.getRGB(x, y)).getRed();
+                int green = new Color(img.getRGB(x, y)).getGreen();
+                int blue = new Color(img.getRGB(x, y)).getBlue();
+                
+                int outputRGB = new Color(green, blue, red).getRGB();
+                
+                img.setRGB(x, y, outputRGB);
+            }
+        }
+        
+        return img;
+    }
+    
+    public static BufferedImage createPlain(BufferedImage img) {
+       
+        return img;
+    }
+    
+    public static BufferedImage createLowDepth(BufferedImage img) {
+        
+        for (int x = 0; x<img.getWidth()-1; x++)
+        {
+            for (int y = 0; y<img.getHeight()-1; y++)
+            {
+                //get colors as separate components, invert, then set.
+                int red = new Color(img.getRGB(x, y)).getRed();
+                int green = new Color(img.getRGB(x, y)).getGreen();
+                int blue = new Color(img.getRGB(x, y)).getBlue();
+                
+                int stepSize = 64;
+                
+                //divide up the colour space into fewer parts, change colour to these.
+                for (int i=0; i<255; i+=stepSize)
+                {
+                    if (i<=red && red < i+stepSize)
+                    {
+                        red=i+stepSize;
+                        break;
+                    }
+                }
+                for (int i=0; i<255; i+=stepSize)
+                {
+                    if (i<=green && green < i+stepSize)
+                    {
+                        green=i+stepSize;
+                        break;
+                    }
+                }
+                for (int i=0; i<255; i+=stepSize)
+                {
+                    if (i<=blue && blue < i+stepSize)
+                    {
+                        blue=i+stepSize;
+                        break;
+                    }
+                }
+                
+                if (red > 255) red = 255;
+                if (green > 255) green = 255;
+                if (blue > 255) blue = 255;
+                
+                int outputRGB = new Color(red, green, blue).getRGB();
+                
+                img.setRGB(x, y, outputRGB);
+            }
+        }
+        
+        return img;
     }
    
     public java.util.LinkedList<Pic> getPicsForUser(String User) {

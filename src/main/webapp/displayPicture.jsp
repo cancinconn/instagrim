@@ -109,7 +109,13 @@
                 <div class="commentLeftDiv">
                     <!-- profile picture -->
                     <div class="commentPicDiv">
-                        <a href="${pageContext.request.contextPath}/Profile/<%=comments.get(i).getAuthor()%>" ><img class = "commentPic" src="${pageContext.request.contextPath}/Thumb/<%=comments.get(i).getProfilePictureSUUID()%>"></a>
+                        
+                        <% if(comments.get(i).getProfilePictureSUUID() == null) 
+                        {%>
+                            <a class = "blankCommentPic" href="${pageContext.request.contextPath}/Profile/<%=comments.get(i).getAuthor()%>" ></a>
+                        <%} else {%>
+                            <a href="${pageContext.request.contextPath}/Profile/<%=comments.get(i).getAuthor()%>" ><img class = "commentPic" src="${pageContext.request.contextPath}/Thumb/<%=comments.get(i).getProfilePictureSUUID()%>"></a>
+                        <%}%>
                     </div>
                     <!-- comment author -->
                     <p class = "pageText"><a href="${pageContext.request.contextPath}/Profile/<%=comments.get(i).getAuthor()%>"><%=comments.get(i).getAuthor()%></a></p>

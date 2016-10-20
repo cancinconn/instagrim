@@ -56,7 +56,6 @@ public class Register extends HttpServlet {
         //Do Input validation:
         if (username == null || username.equals("") || password == null || password.equals(""))
         {
-            
             //Write error message:
             NotificationWriter.writeNotification("Please ensure that your username or password field is not empty!", Notification.NotificationType.ERROR, request);
 
@@ -66,6 +65,17 @@ public class Register extends HttpServlet {
         
         User user=new User();
         user.setCluster(cluster);
+        
+        //check if username already exists:
+        if (!user.isUsernameAvailable(username))
+        {
+            //Write error message:
+            NotificationWriter.writeNotification("That username is already in use! Please pick another one.", Notification.NotificationType.ERROR, request);
+
+            response.sendRedirect(request.getContextPath()+"/Register");
+            return; //return so that we do not do any more processing on this request.
+        }
+        
         user.registerUser(username, password);
         user.updateDetails(username, password, firstName, lastName);
         

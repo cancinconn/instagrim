@@ -233,6 +233,14 @@ p{
     text-align: center;
 }
 
+.pageTextInline{
+    display:inline-block;
+    margin: auto;
+    color: black;
+    font-family: "Verdana";
+    text-align: center;
+}
+
 .pLeft{
     color: white;
     font-family: "Verdana";
@@ -377,6 +385,13 @@ a:hover {
     height: 100px;
 }
 
+.blankCommentPic {
+    display:block;
+    width:100px;
+    height:100px; 
+    background-color: white;
+}
+
 .notificationInfoDiv {
     margin:auto;
     width:800px;
@@ -388,6 +403,9 @@ a:hover {
     border: 1px solid #000000;
     margin-top: 10px;
     margin-bottom: 10px;
+    
+    padding: 12px;
+    padding-bottom: 2px;
 }
 
 .notificationErrorDiv {
@@ -400,8 +418,11 @@ a:hover {
     position:relative;
     border: 1px solid #000000;
     
-        margin-top: 10px;
+    margin-top: 10px;
     margin-bottom: 10px;
+    
+    padding: 12px;
+    padding-bottom: 2px;
 }
 
 .notificationText{
@@ -410,4 +431,69 @@ a:hover {
     color: black;
     font-family: "Verdana";
     text-align: center;
+}
+
+input[type=text], select {
+    width: 500px;
+    padding: 12px 20px;
+    margin: auto;
+    margin-top:8px;
+    margin-bottom:8px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: auto;
+    margin-top:8px;
+    margin-bottom:8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    text-align:center;
+}
+
+input[type=submit]:hover {
+    background-color: #006699;
+}
+
+
+input[type=file] {
+    
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: auto;
+    margin-top:8px;
+    margin-bottom:8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.centerInlineDiv {
+    
+    text-align: center;
+    
+}
+
+.centerDiv2 {
+    
+    margin:0 auto;
+    width: 660px;
+    
+}
+
+.rightInlineDiv{
+    
+    text-align: right;
+    
 }
