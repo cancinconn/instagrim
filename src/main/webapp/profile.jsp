@@ -86,15 +86,84 @@
                 </div>
          
          <%
-         //Finally, display the profile editing option if this profile belongs to this session's LoggedIn user
+         //Display the profile editing option if this profile belongs to this session's LoggedIn user
          if (lg != null) {
             if (lg.getLoggedIn() && lg.getUsername().equals(userDetails.getUsername())) { %>
                 <div class="buttonDiv">
                     <a href="${pageContext.request.contextPath}/UpdateProfile/<%=lg.getUsername()%>" class="button">Update Profile Details</a>
                 </div>
         <%  }
+            else if (lg.getLoggedIn() && !lg.getUsername().equals(userDetails.getUsername()))
+            {
+                //Display follow button if we are logged in but this is not us.
+                %>
+                    <div class="buttonDiv">
+                        <a href="${pageContext.request.contextPath}/Follow/<%=userDetails.getUsername()%>" class="button">Follow <%=userDetails.getUsername()%></a>
+                    </div>
+                <%
+            }
         }
         %>
+        
+        <% //Display follows
+            
+            LinkedList<Following> followList = (LinkedList<Following>) request.getAttribute("follows");
+            
+            if (!followList.isEmpty())
+            {
+            %>
+                <p class="pageText">Users that <%=userDetails.getUsername()%> follows:</p>
+                
+                <table align="center">
+                
+                <% int counter=0;
+                    int rowCount = 3;
+                    for (Following follow : followList) 
+                {%>
+                <!-- PRESENTING FOLLOWED USER -->
+                
+                <!-- Put a new row in every time counter is divisible by rowCount. -->
+                        <% if ((counter % rowCount) == 0)
+                        { %>
+                        </tr> <!--end the last table row-->
+                        <tr> <!-- start a new table row-->
+                        <%
+                        } %>
+
+                     <!-- display the image -->
+                    <td>
+ 
+                        <div class="commentLeftDiv">
+                            <!-- profile picture -->
+                            <div class="commentPicDiv">
+
+                                <% if(follow.getProfilePictureSUUID() == null) 
+                                {%>
+                                    <a class = "blankCommentPic" href="${pageContext.request.contextPath}/Profile/<%=follow.getUsername()%>" ></a>
+                                <%} else {%>
+                                    <a href="${pageContext.request.contextPath}/Profile/<%=follow.getUsername()%>" ><img class = "commentPic" src="${pageContext.request.contextPath}/Thumb/<%=follow.getProfilePictureSUUID()%>"></a>
+                                <%}%>
+                            </div>
+                            <!-- comment author -->
+                            <p class = "pageText"><a href="${pageContext.request.contextPath}/Profile/<%=follow.getUsername()%>"><%=follow.getUsername()%></a></p>
+                        </div>
+                            
+                    </td>
+                    
+                <%counter++;%>
+                
+                <%}%>
+                
+                </tr> <!-- End the last row -->
+                
+                </table>
+            
+            <% } //end of "if followList is not empty"
+            else {%>
+
+                <p class="pageText"><%=userDetails.getUsername()%> does not follow anyone. It must be lonely for them! :|</p>
+            
+            <% } %>
          
         
          <%} //End of page display logic %>

@@ -37,6 +37,7 @@ import static org.imgscalr.Scalr.*;
 import org.imgscalr.Scalr.Method;
 
 import uk.ac.dundee.computing.aec.instagrim.lib.*;
+import uk.ac.dundee.computing.aec.instagrim.stores.Following;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
 //import uk.ac.dundee.computing.aec.stores.TweetStore;
 
@@ -61,6 +62,100 @@ public class PicModel {
 
     public void setCluster(Cluster cluster) {
         this.cluster = cluster;
+    }
+    
+    public java.util.LinkedList<Pic> getFeedPics(String username) {
+        java.util.LinkedList<Pic> results = new java.util.LinkedList<>();
+        
+        LinkedList<LinkedList<Pic>> picLists = new LinkedList<LinkedList<Pic>>();
+        
+        //get the list of followed people, using the FollowModel
+        FollowModel followModel = new FollowModel(cluster);
+        LinkedList<Following> followList = followModel.getFollowedUsers(username);
+        
+        for (Following follow : followList)
+        {
+            picLists.add(getRecentPicsByUser(follow.getUsername(), 10));
+        }
+        
+        int resultsCount = 0;
+        int targetCount = 12;
+        int emptyCounter = 0;
+        
+        while (resultsCount < targetCount)
+        {
+           for (LinkedList<Pic> picList : picLists)
+           {
+               //should we stop?
+               if (resultsCount >= targetCount || emptyCounter >= picLists.size()) break; //stop if we have enough pics or if all our lists are empty.
+               
+               if (picList != null)
+               {
+                    if (!picList.isEmpty())
+                    {
+                        emptyCounter = 0; //reset empty counter
+                        results.add(picList.get(0));
+                        resultsCount++;
+                        picList.remove(picList.get(0));
+                        continue;
+                    }
+                    else
+                    {
+                        //one of the lists is empty, add to empty counter so we know when to stop:
+                        emptyCounter++;
+                    }
+               } else {
+                   //a null list of pics counts as an empty list.
+                   emptyCounter++;
+               }
+
+           }
+        }
+
+        //Finally, return the list of pictures we retrieved!
+        return results;
+    }
+            
+        public java.util.LinkedList<Pic> getRecentPicsByUser (String user, int limit) {
+        java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
+        Session session = cluster.connect("instagrim");
+        PreparedStatement ps = session.prepare("SELECT picid FROM userpiclist WHERE user = ? LIMIT ?");
+        ResultSet rs = null;
+        BoundStatement boundStatement = new BoundStatement(ps);
+        rs = session.execute( boundStatement.bind(user, limit) );
+        if (rs.isExhausted()) {
+            //No pictures returned.
+            return null;
+        } else {
+            for (Row row : rs) {
+                Pic pic = new Pic();
+                java.util.UUID UUID = row.getUUID("picid");
+                pic.setUUID(UUID);
+                Pics.add(pic);
+            }
+        }
+        return Pics;
+    }    
+            
+    public java.util.LinkedList<Pic> getRecentPics () {
+        java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
+        Session session = cluster.connect("instagrim");
+        PreparedStatement ps = session.prepare("SELECT picid FROM userpiclist LIMIT 21");
+        ResultSet rs = null;
+        BoundStatement boundStatement = new BoundStatement(ps);
+        rs = session.execute( boundStatement.bind() );
+        if (rs.isExhausted()) {
+            //No pictures returned.
+            return null;
+        } else {
+            for (Row row : rs) {
+                Pic pic = new Pic();
+                java.util.UUID UUID = row.getUUID("picid");
+                pic.setUUID(UUID);
+                Pics.add(pic);
+            }
+        }
+        return Pics;
     }
 
     public void insertPic(byte[] b, String type, String name, String user, String title, FilterTypes filterType) {
@@ -345,6 +440,8 @@ public class PicModel {
         
         return img;
     }
+    
+    
    
     public java.util.LinkedList<Pic> getPicsForUser(String User) {
         java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
@@ -356,13 +453,12 @@ public class PicModel {
                 boundStatement.bind( // here you are binding the 'boundStatement'
                         User));
         if (rs.isExhausted()) {
-            System.out.println("No Images returned");
+            //No pictures returned
             return null;
         } else {
             for (Row row : rs) {
                 Pic pic = new Pic();
                 java.util.UUID UUID = row.getUUID("picid");
-                System.out.println("UUID" + UUID.toString());
                 pic.setUUID(UUID);
                 Pics.add(pic);
 

@@ -58,6 +58,13 @@ public final class Keyspaces {
                 + "      time timestamp,\n"
                 + " PRIMARY KEY (picid, time)"
                 + "  ) WITH CLUSTERING ORDER BY (time DESC);";
+            
+            String CreateFollows = "CREATE TABLE if not exists instagrim.follows (\n"
+                + "      user1 text,\n"
+                + "      user2 text,\n"
+                + "      time timestamp,\n"
+                + " PRIMARY KEY (user1, time)"
+                + "  ) WITH CLUSTERING ORDER BY (time DESC);";
 
             Session session = c.connect();
             try {
@@ -110,6 +117,15 @@ public final class Keyspaces {
             } catch (Exception et) {
                 System.out.println("Can't create Comments " + et);
             }
+            try {
+                SimpleStatement cqlQuery = new SimpleStatement(CreateFollows);
+                session.execute(cqlQuery);
+            } catch (Exception et) {
+                System.out.println("Can't create Follows " + et);
+            }
+            
+            
+
 
             session.close();
 

@@ -5,24 +5,22 @@
  */
 package uk.ac.dundee.computing.aec.instagrim.servlets;
 
+import com.datastax.driver.core.Cluster;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
-import com.datastax.driver.core.Cluster;
-import java.util.LinkedList;
-import java.util.UUID;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
-import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
-import uk.ac.dundee.computing.aec.instagrim.models.FollowModel;
+import uk.ac.dundee.computing.aec.instagrim.lib.NotificationWriter;
 import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
-import uk.ac.dundee.computing.aec.instagrim.stores.Following;
+import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
+import uk.ac.dundee.computing.aec.instagrim.stores.Notification;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
 import uk.ac.dundee.computing.aec.instagrim.stores.UserDetails;
 
@@ -30,17 +28,15 @@ import uk.ac.dundee.computing.aec.instagrim.stores.UserDetails;
  *
  * @author Can
  */
-@WebServlet(name = "Profile", urlPatterns = {"/Profile", "/Profile/*"})
-public class Profile extends HttpServlet {
-    
+@WebServlet(name = "FrontPage", urlPatterns = {"/Feed", "/feed"})
+public class FrontPage extends HttpServlet {
+
     private Cluster cluster;
     
-        
-    @Override
     public void init(ServletConfig config) throws ServletException {
         cluster = CassandraHosts.getCluster();
     }
-
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -52,44 +48,10 @@ public class Profile extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         
-        //TODO: Read username from URL
-        
-        //Initialise user and pic models which will grab data from cassandra
-        User userModel = new User();
-        userModel.setCluster(cluster);
-        
-        PicModel picModel = new PicModel();
-        picModel.setCluster(cluster);
-        
-        FollowModel followModel = new FollowModel(cluster);
-        
-        String[] args = request.getPathInfo().split("/");
-        //args[1] will be the user's username, use it to get details
-        String username = args[1];
-        
-        //Get user details
-        UserDetails userDetails = userModel.getDetails(username);
-        request.setAttribute("userDetails", userDetails);
-        
-        //Get Profile pic
-        UUID picid = userModel.getProfilePicID(username);
-        Pic profilePic =  picModel.getPic(Convertors.DISPLAY_THUMB, picid);
-        request.setAttribute("profilePic", profilePic);
-        
-        //Get follows
-        LinkedList<Following> followList = new LinkedList<>();
-        if (userDetails != null)
-        {
-             followList = followModel.getFollowedUsers(username);
-        }
-        request.setAttribute("follows", followList);
-        
-        RequestDispatcher rd = request.getRequestDispatcher("/profile.jsp");
-        rd.forward(request, response);
         
     }
-
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -103,7 +65,36 @@ public class Profile extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
+        LoggedIn lg = (LoggedIn)request.getSession().getAttribute("LoggedIn");
+        boolean isUserLoggedIn=false;
+        if (lg!= null)
+        {
+            if(lg.getLoggedIn() && lg.getUsername()!=null)
+            {
+                isUserLoggedIn = true;
+            }
+        }
+        
+        if (!isUserLoggedIn)
+        {
+            NotificationWriter.writeNotification("Cannot show customised feed: you are not logged in!", Notification.NotificationType.ERROR, request, true);
+            response.sendRedirect(request.getContextPath());
+            return;
+        }
+        else
+        {
+            //We need the Picture Model to grab information from cassandra on which pictures to display
+            PicModel picModel = new PicModel();
+            picModel.setCluster(cluster);
+            java.util.LinkedList<Pic> lsPics = picModel.getFeedPics(lg.getUsername());
+
+            RequestDispatcher rd = request.getRequestDispatcher("/frontPage.jsp");
+            request.setAttribute("Pics", lsPics);
+            rd.forward(request, response);
+            return;
+        }
+        
     }
 
     /**
@@ -117,7 +108,7 @@ public class Profile extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        //processRequest(request, response);
     }
 
     /**

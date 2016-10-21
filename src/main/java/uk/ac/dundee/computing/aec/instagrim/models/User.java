@@ -193,6 +193,9 @@ public class User {
        {
             UserDetails details = null;    
             
+            //error handling
+            if (username == null || username.equals("")) return details;
+            
            if (cluster != null)
            {
                 //TODO: Get details

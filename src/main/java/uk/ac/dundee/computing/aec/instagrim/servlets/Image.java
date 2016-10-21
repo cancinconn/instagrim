@@ -131,7 +131,7 @@ public class Image extends HttpServlet {
 
     private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        //We also need the user Model to grab information from cassandra on whose pictures are being displayed
+        //We need the User Model to grab information from cassandra on whose pictures are being displayed
         User userModel = new User();
         userModel.setCluster(cluster);
         
