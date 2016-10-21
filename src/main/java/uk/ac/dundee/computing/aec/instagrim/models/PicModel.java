@@ -81,13 +81,18 @@ public class PicModel {
         int resultsCount = 0;
         int targetCount = 12;
         int emptyCounter = 0;
+        boolean searchComplete = false; //assume false, set to true when it's over
         
-        while (resultsCount < targetCount)
+        while (resultsCount < targetCount && searchComplete == false)
         {
            for (LinkedList<Pic> picList : picLists)
            {
-               //should we stop?
-               if (resultsCount >= targetCount || emptyCounter >= picLists.size()) break; //stop if we have enough pics or if all our lists are empty.
+               //stop if we have enough pics or if all our lists are empty.
+               if (resultsCount >= targetCount || emptyCounter >= picLists.size())
+               {
+                   searchComplete = true;
+                   break;
+               } 
                
                if (picList != null)
                {
