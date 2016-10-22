@@ -7,6 +7,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="uk.ac.dundee.computing.aec.instagrim.stores.*" %>
 
+<%boolean isLoggedIn = false; //For use in jsp views. Initially assumed false, changed later.%>
+
 <head>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/Styling.css">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -19,10 +21,10 @@
     <div class="titleBox">
         
         <div class="leftDiv">
-        <a href="${pageContext.request.contextPath}" >
-            <p class="barTitle">Instagrim :|  </p>
-            <p class="barText">Your world in black and white.</p>
-        </a>
+        
+            <p class="barTitle"><a href="${pageContext.request.contextPath}">Instagrim :| </a></p>
+            <p class="barText"><a href="${pageContext.request.contextPath}">Your world in black and white.</a></p>
+        
         <ul>
             <li><a href="${pageContext.request.contextPath}/Upload">Upload</a></li>
                 <%
@@ -30,6 +32,7 @@
                     if (lg != null) {
                         String UserName = lg.getUsername();
                         if (lg.getLoggedIn()) {
+                            isLoggedIn = true;
                 %>
 
             <li><a href="${pageContext.request.contextPath}/Images/<%=lg.getUsername()%>">Your Images</a></li>

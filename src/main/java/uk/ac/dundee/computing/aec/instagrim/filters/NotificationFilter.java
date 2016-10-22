@@ -71,6 +71,8 @@ public class NotificationFilter implements Filter {
         if (debug) {
             log("NotificationFilter:DoAfterProcessing");
         }
+        
+
 
         //Notifications are stored in the session since using POST-REDIRECT-GET disallows us from simply forwarding them to the views.
         //I decided I either had to do session-scope notifications or use parameters that describe what error is to be displayed. A pre-set list of errors specified by ID in the URL seems cumbersome to me and would ruin the clean URL.
@@ -80,6 +82,12 @@ public class NotificationFilter implements Filter {
         //if this is a http request and is of the GET method, then remove the notification (we assume that errors have now been displayed since they did a GET, and none have been created since they only viewed a page, not submitted any data)
         if (request.getScheme().equalsIgnoreCase("HTTP") || request.getScheme().equalsIgnoreCase("HTTPS"))
         {
+            
+                    HttpSession existingSession = ((HttpServletRequest)request).getSession(false);
+                    if (existingSession == null) {
+                        return; //no session created yet, so no need for us to process any notifications.
+                    }
+            
             if (((HttpServletRequest)request).getMethod().equalsIgnoreCase("GET"))
             {
                 HttpSession session=((HttpServletRequest)request).getSession(); 

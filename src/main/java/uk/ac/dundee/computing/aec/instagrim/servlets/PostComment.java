@@ -6,6 +6,7 @@
 package uk.ac.dundee.computing.aec.instagrim.servlets;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.exceptions.NoHostAvailableException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletConfig;
@@ -29,11 +30,21 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Notification;
 public class PostComment extends HttpServlet {
 
     Cluster cluster=null;
+    
+    @Override
     public void init(ServletConfig config) throws ServletException {
         // TODO Auto-generated method stub
         cluster = CassandraHosts.getCluster();
     }
     
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoHostAvailableException
+    {
+        if (cluster == null)
+        {
+            response.sendRedirect(request.getContextPath()+"/Error");
+        }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

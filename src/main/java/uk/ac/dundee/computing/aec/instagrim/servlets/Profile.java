@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.exceptions.NoHostAvailableException;
 import java.util.LinkedList;
 import java.util.UUID;
 import javax.servlet.RequestDispatcher;
@@ -42,6 +43,15 @@ public class Profile extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         cluster = CassandraHosts.getCluster();
+    }
+    
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoHostAvailableException
+    {
+        if (cluster == null)
+        {
+            response.sendRedirect(request.getContextPath()+"/Error");
+        }
     }
 
     /**

@@ -6,6 +6,7 @@
 package uk.ac.dundee.computing.aec.instagrim.servlets;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.exceptions.NoHostAvailableException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,8 +39,18 @@ public class Upload extends HttpServlet {
 
     private Cluster cluster;
     
+    @Override
     public void init(ServletConfig config) throws ServletException {
         cluster = CassandraHosts.getCluster();
+    }
+    
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoHostAvailableException
+    {
+        if (cluster == null)
+        {
+            response.sendRedirect(request.getContextPath()+"/Error");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

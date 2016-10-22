@@ -12,26 +12,26 @@
     
     <body>
         <header>
-        <h1>InstaGrim! </h1>
-        <h2>Sign up to Instagrim now to start sharing your pictures with friends!</h2>
+            <p class = "pageTitle">Login</p>
+            <p class = "pageText">Please enter your login details below.</p>
         </header>
        
         <article>
-            <h3>Login</h3>
             <form method="POST"  action="Login">
-                <ul>
-                    <li>User Name <input type="text" name="username"></li>
-                    <li>Password <input type="password" name="password"></li>
-                </ul>
+                
+                <div class="centerDiv2" style="margin-top:30px;">
+                    <div class="rightInlineDiv">
+                        <p class = "pageTextInline">Username <input type="text" name="username"></p>
+                        <p class = "pageTextInline">Password <input type="password" name="password"></p>
+                    </div>
+                </div>
                 <br/>
-                <input type="submit" value="Login"> 
+                
+                <div style="text-align: center;">
+                    <input type="submit" value="Log In"> 
+                </div>
             </form>
 
         </article>
-        <footer>
-            <ul>
-                <li class="footer"><a href="/Instagrim">Home</a></li>
-            </ul>
-        </footer>
     </body>
 </html>

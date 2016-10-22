@@ -57,11 +57,19 @@ public final class CassandraHosts {
     }
 
     public static Cluster getCluster() {
-        System.out.println("getCluster");
-        cluster = Cluster.builder()
-                .addContactPoint(Host).build();
-        getHosts(cluster);
-        Keyspaces.SetUpKeySpaces(cluster);
+        
+        //Catch NoHostAvailable exception if cassandra isn't available
+        try
+        {
+            System.out.println("getCluster");
+            cluster = Cluster.builder()
+                    .addContactPoint(Host).build();
+            getHosts(cluster);
+            Keyspaces.SetUpKeySpaces(cluster);
+        } catch (Exception ex)
+        {
+            return null;
+        }
 
         return cluster;
 

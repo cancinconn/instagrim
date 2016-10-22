@@ -1,6 +1,7 @@
 package uk.ac.dundee.computing.aec.instagrim.servlets;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.exceptions.NoHostAvailableException;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -73,8 +74,18 @@ public class Image extends HttpServlet {
         CommandsMap.put("Image", 4);
     }
 
+    @Override
     public void init(ServletConfig config) throws ServletException {
         cluster = CassandraHosts.getCluster();
+    }
+    
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoHostAvailableException
+    {
+        if (cluster == null)
+        {
+            response.sendRedirect(request.getContextPath()+"/Error");
+        }
     }
 
     /**

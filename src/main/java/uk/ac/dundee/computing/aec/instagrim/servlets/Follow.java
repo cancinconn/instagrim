@@ -6,8 +6,10 @@
 package uk.ac.dundee.computing.aec.instagrim.servlets;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.exceptions.NoHostAvailableException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -31,11 +33,21 @@ public class Follow extends HttpServlet {
 
     
     private Cluster cluster;
+    
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoHostAvailableException
+    {
+        if (cluster == null)
+        {
+            response.sendRedirect(request.getContextPath()+"/Error");
+        }
+    }
         
     
     @Override
     public void init(ServletConfig config) throws ServletException {
         cluster = CassandraHosts.getCluster();
+       
     }
         
     /**
@@ -201,7 +213,7 @@ public class Follow extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response, false);
     }
-
+    
     /**
      * Returns a short description of the servlet.
      *
@@ -209,7 +221,7 @@ public class Follow extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Provides Follow functionality by using the FollowModel to store data in cassandra and updating user view using jsp files.";
     }// </editor-fold>
 
 }

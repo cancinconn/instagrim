@@ -7,6 +7,7 @@ package uk.ac.dundee.computing.aec.instagrim.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,10 +18,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Can
  */
-//@WebServlet(name = "FrontController", urlPatterns = {"/FrontController"})
-
-@WebServlet(name = "FrontController", urlPatterns = {"/commands/*"})
-public class FrontController extends HttpServlet {
+@WebServlet(name = "Error", urlPatterns = {"/Error", "/error"})
+public class Error extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,44 +30,13 @@ public class FrontController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
-        String pathInfo = request.getPathInfo();
-        
-        //if request.getPathInfo returns null, we must ensure it doesn't cause a NPE.
-        if (pathInfo == null)
-        {
-            pathInfo = "";
-        }
-        
-        switch (pathInfo)
-        {
-            case "/showOldIndex":
-                response.sendRedirect(request.getContextPath() + "/" + "indexOld.jsp");
-                break;
-            default:
-                //redirect to home page
-                response.sendRedirect(request.getContextPath() + "/" + "index.jsp");
-                break;
-                
-        }
-
-
-        
-        /*
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            // TODO output your page here. You may use following sample code.
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet FrontController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet FrontController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        */
+        
+        RequestDispatcher rd = request.getRequestDispatcher("/error.jsp");
+        rd.forward(request, response);
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -107,9 +75,7 @@ public class FrontController extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Plays the role of a front controller; this servlet calls relevant Commands based on the request and does redirection afterwards.";
-    }
-
-// </editor-fold>
+        return "Displays error message.";
+    }// </editor-fold>
 
 }

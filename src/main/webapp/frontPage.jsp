@@ -16,9 +16,14 @@
  
         <article>
             
-            <h1>Welcome to Instagrim!</h1>
+            <p class = "pageTitle">Recently uploaded pictures by our users</p>
             
-            <p class = "pageTitle">Pictures from our users</p>
+            <% if (!isLoggedIn) {%>
+                <p class = "pageText"><a href="${pageContext.request.contextPath}/Register">Sign up</a> to Instagrim now to start sharing your pictures with friends!</p>
+            <% } %>
+            
+            
+            <br>
             
         <%
             java.util.LinkedList<Pic> lsPics = (java.util.LinkedList<Pic>) request.getAttribute("Pics");
@@ -67,4 +72,9 @@
         
         </article>
     </body>
+    
+    <footer>
+        <p class="pageText">Built by Can Gafuroglu upon the works of Andy C for an assignment at the University of Dundee.</p>
+    </footer>
+    
 </html>

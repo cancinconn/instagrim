@@ -23,6 +23,7 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Notification;
 @WebServlet(name = "Logout", urlPatterns = {"/Logout", "/logout"})
 public class Logout extends HttpServlet {
 
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.

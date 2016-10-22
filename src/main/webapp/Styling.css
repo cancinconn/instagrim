@@ -83,10 +83,6 @@ body {
     font-family: "Times New Roman";
 }
 
-.barTitle a:hover {
-    background-color: #555;
-    color: white;
-}
 
 .barText {
     margin: 0px;
@@ -112,19 +108,10 @@ body {
     font-style: italic;
 }
 
-.barTitle a:hover {
-    background-color: #555;
-    color: white;
-}
+
 
 nav {
     
-}
-
-
-
-a {
-    font-family: "Times New Roman";
 }
 
 nav ul {
@@ -155,6 +142,7 @@ nav li a:hover {
     background-color: #555;
     color: white;
     text-decoration: none;
+    color: #ff9900;
 }
 
 .liRight {
@@ -296,6 +284,28 @@ a:hover {
     font-family: "Verdana";
     color: #ff9900;
     text-decoration: underline;
+}
+
+.barText a {
+    text-decoration: none;
+    color:white;
+}
+
+.barTitle a {
+    text-decoration: none;
+    color:white;
+    font-family: "Times New Roman";
+}
+
+.barText a:hover {
+    text-decoration: none;
+}
+
+.barTitle a:hover {
+    text-decoration: none;
+    color:white;
+    color: #ff9900;
+    font-family: "Times New Roman";
 }
 
 .buttonDiv {

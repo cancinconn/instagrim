@@ -11,29 +11,44 @@
      <%@ include file="header.jsp" %>
     
     <body>
-        <header>
-        <h1>InstaGrim ! </h1>
-        <h2>Your world in Black and White</h2>
-        </header>
        
         <article>
-            <h3>Register as user</h3>
+            <p class = "pageTitle">Create an Instagrim Account</p>
+            
+            <p class = "pageText">Please fill in the form below to register. Fields marked with asterisks (*) below are required.</p>
+            
             <form method="POST"  action="Register">
-                <ul>
-                    <li>User Name <input type="text" name="username" pattern=".{3,}" required title="Must be at least 3 characters, only alphanumeric characters and underscores are allowed."> (3 or more characters)</li>
-                    <li>Password <input type="password" name="password" pattern=".{8,}" required title="Must be at least 8 characters, only alphanumeric characters and underscores are allowed."> (8 or more characters)</li>
-                    <li>First Name <input type="text" name="fname" required> (required)</li>
-                    <li>Last Name <input type="text" name="lname"></li>
-                </ul>
+                <div class="centerDiv2" style="margin-top:30px;">
+                    <div class="rightInlineDiv">
+                        <p class = "pageTextInline">User Name* <input type="text" name="username" pattern=".{3,}" required title="Must be at least 3 characters, only alphanumeric characters and underscores are allowed."></p>
+                    </div>
+                </div>
+                <div class="centerDiv2">
+                    <div class="rightInlineDiv">
+                        <p class = "pageTextInline">Password* <input type="password" name="password" pattern=".{8,}" required title="Must be at least 8 characters, only alphanumeric characters and underscores are allowed."></p>
+                    </div>
+                </div>
+                <div class="centerDiv2">
+                    <div class="rightInlineDiv">
+                        <p class = "pageTextInline">First Name* <input type="text" name="fname" required></p>
+                    </div>
+                </div>
+                <div class="centerDiv2">
+                    <div class="rightInlineDiv">
+                        <p class = "pageTextInline">Last Name <input type="text" name="lname"></p>
+                    </div>
+                </div>
+                    
+                    
+                    
+                    
                 <br/>
-                <input type="submit" value="Register"> 
+                <div style="text-align: center;">
+                    <input type="submit" value="Register"> 
+                </div>
+                
             </form>
 
         </article>
-        <footer>
-            <ul>
-                <li class="footer"><a href="${pageContext.request.contextPath}">Home</a></li>
-            </ul>
-        </footer>
     </body>
 </html>
