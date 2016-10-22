@@ -95,11 +95,31 @@
         <%  }
             else if (lg.getLoggedIn() && !lg.getUsername().equals(userDetails.getUsername()))
             {
-                //Display follow button if we are logged in but this is not us.
+                //Display Follow section if we are logged in but this is not us.
                 %>
-                    <div class="buttonDiv">
-                        <a href="${pageContext.request.contextPath}/Follow/<%=userDetails.getUsername()%>" class="button">Follow <%=userDetails.getUsername()%></a>
-                    </div>
+                
+                
+                <% boolean isFollowing = (boolean)request.getAttribute("isFollowing");
+                if (!isFollowing)
+                {%>
+                
+                <div class="buttonDiv">
+                    <a href="${pageContext.request.contextPath}/Follow/<%=userDetails.getUsername()%>" class="button">Follow <%=userDetails.getUsername()%></a>
+                </div>
+                
+                <%} else { //we are following the user already:%>
+                
+                <div class="buttonDiv">
+                    <p class="pageText">You follow <%=userDetails.getUsername()%>.</p>
+                </div>
+                
+                <div class="buttonDiv">
+                    <a href="${pageContext.request.contextPath}/Unfollow/<%=userDetails.getUsername()%>" class="button">Unfollow <%=userDetails.getUsername()%></a>
+                </div>
+                
+                <% }%>
+                
+                    
                 <%
             }
         }

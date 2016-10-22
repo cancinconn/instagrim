@@ -51,7 +51,6 @@ public class Login extends HttpServlet {
             LoggedIn lg= new LoggedIn();
             lg.setLoggedIn();
             lg.setUsername(username);
-            //request.setAttribute("LoggedIn", lg);
             
             session.setAttribute("LoggedIn", lg);
             System.out.println("Session in servlet "+session);
@@ -92,6 +91,9 @@ public class Login extends HttpServlet {
         
         String username=request.getParameter("username");
         String password=request.getParameter("password");
+        
+        //Input validation: enforce lowercase usernames
+        username = username.toLowerCase();
         
         loginSession(username, password, request, response, cluster, false);
         

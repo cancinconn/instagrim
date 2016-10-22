@@ -29,11 +29,13 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
+import uk.ac.dundee.computing.aec.instagrim.lib.NotificationWriter;
 import uk.ac.dundee.computing.aec.instagrim.models.CommentModel;
 import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
 import uk.ac.dundee.computing.aec.instagrim.stores.Comment;
 import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
+import uk.ac.dundee.computing.aec.instagrim.stores.Notification;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
 import uk.ac.dundee.computing.aec.instagrim.stores.UserDetails;
 
@@ -91,13 +93,13 @@ public class Image extends HttpServlet {
         }
         switch (command) {
             case 1: //Raw Image
-                DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
+                DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response,request);
                 break;
             case 2: //Images
                 DisplayImageList(args[2], request, response);
                 break;
             case 3: //Thumb
-                DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
+                DisplayImage(Convertors.DISPLAY_THUMB,args[2], response, request);
                 break;
             case 4: //request for Image Page
                 ForwardToImagePage(Convertors.DISPLAY_PROCESSED, request, response, args[2]);
@@ -115,6 +117,14 @@ public class Image extends HttpServlet {
         PicModel picModel = new PicModel();
         picModel.setCluster(cluster);
         pic = picModel.getPic(imageType, UUID.fromString(uuid));
+        
+        //Error check
+        if (pic == null)
+        {
+            NotificationWriter.writeNotification("The image you requested could not be found.", Notification.NotificationType.ERROR, request, true);
+            response.sendRedirect(request.getContextPath());
+            return;
+        }
         
         //get the list of comments to be displayed on the page from the CommentModel
         CommentModel commentModel = new CommentModel(cluster);
@@ -151,12 +161,20 @@ public class Image extends HttpServlet {
 
     }
 
-    private void DisplayImage(int type,String Image, HttpServletResponse response) throws ServletException, IOException {
+    private void DisplayImage(int type,String Image, HttpServletResponse response, HttpServletRequest request) throws ServletException, IOException {
         PicModel tm = new PicModel();
         tm.setCluster(cluster);
   
         
         Pic p = tm.getPic(type,java.util.UUID.fromString(Image));
+        
+        //Error check
+        if (p == null)
+        {
+            NotificationWriter.writeNotification("The image you requested could not be found.", Notification.NotificationType.ERROR, request, true);
+            response.sendRedirect(request.getContextPath());
+            return;
+        }
         
         OutputStream out = response.getOutputStream();
 

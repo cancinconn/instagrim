@@ -225,9 +225,23 @@ p{
     font-family: "Verdana";
 }
 
+.pageTitle{
+    display:block;
+    margin: auto;
+    margin-bottom: 16px;
+    margin-top: 16px;
+    color: black;
+    font-family: "Verdana";
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+
 .pageText{
     display:block;
     margin: auto;
+    margin-bottom: 6px;
+    margin-top: 6px;
     color: black;
     font-family: "Verdana";
     text-align: center;
@@ -263,6 +277,8 @@ p{
 .pic {
     display:block;
     margin: auto;
+    margin-top:16px;
+    margin-bottom:16px;
 }
 
 .picThumb {
@@ -434,6 +450,18 @@ a:hover {
 }
 
 input[type=text], select {
+    width: 500px;
+    padding: 12px 20px;
+    margin: auto;
+    margin-top:8px;
+    margin-bottom:8px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=password], select {
     width: 500px;
     padding: 12px 20px;
     margin: auto;

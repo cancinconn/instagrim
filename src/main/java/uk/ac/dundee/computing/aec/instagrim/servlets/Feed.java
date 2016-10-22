@@ -8,7 +8,7 @@ package uk.ac.dundee.computing.aec.instagrim.servlets;
 import com.datastax.driver.core.Cluster;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.UUID;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,22 +21,22 @@ import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
 import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
 import uk.ac.dundee.computing.aec.instagrim.stores.Notification;
+import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
+import uk.ac.dundee.computing.aec.instagrim.stores.UserDetails;
 
 /**
  *
  * @author Can
  */
-@WebServlet(name = "UpdateProfilePicture", urlPatterns = {"/UpdateProfilePicture/*"})
-public class UpdateProfilePicture extends HttpServlet {
-    
+@WebServlet(name = "Feed", urlPatterns = {"/Feed", "/feed"})
+public class Feed extends HttpServlet {
+
     private Cluster cluster;
     
-        
-    @Override
     public void init(ServletConfig config) throws ServletException {
         cluster = CassandraHosts.getCluster();
     }
-
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -46,49 +46,11 @@ public class UpdateProfilePicture extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response, boolean isGET)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        String[] args = request.getPathInfo().split("/");
-        
-        //args[1] will be the desired profile picture's uuid.
-        String picUUID = args[1];
-        
-        LoggedIn lg = (LoggedIn)request.getSession().getAttribute("LoggedIn");
-        
-        boolean wasSuccessful = false;
-        if (lg!=null)
-        {
-            if (lg.getLoggedIn() && lg.getUsername() != null)
-            {
-                User user=new User();
-                user.setCluster(cluster);
-                
-                PicModel picModel = new PicModel();
-                picModel.setCluster(cluster);
-                //check if picture belongs to user
-                if (!picModel.doesPictureBelongToUser(UUID.fromString(picUUID), lg.getUsername()))
-                {
-                    NotificationWriter.writeNotification("You can only use one of your own pictures as your profile picture!", Notification.NotificationType.ERROR, request, isGET);
-                    response.sendRedirect(request.getContextPath()+"/Image/"+picUUID);
-                    return;
-                }
-                wasSuccessful = user.updatePicture(lg.getUsername(), picUUID);
-            }
-        }
-        
-        if (wasSuccessful)
-        {
-            response.sendRedirect(request.getContextPath()+"/Profile/"+lg.getUsername()); //lg.getUsername cannot be null if we were successful. This is safe.
-            return;
-        }
-        else
-        {
-            NotificationWriter.writeNotification("We could not set this image as your profile picture.", Notification.NotificationType.ERROR, request, isGET);
-            response.sendRedirect(request.getContextPath()+"/Image/"+picUUID);
-            return;
-        }
 
+        
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -103,7 +65,38 @@ public class UpdateProfilePicture extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response, true);
+        
+        // is the user logged in?
+        LoggedIn lg = (LoggedIn)request.getSession().getAttribute("LoggedIn");
+        boolean isUserLoggedIn=false;
+        if (lg!= null)
+        {
+            if(lg.getLoggedIn() && lg.getUsername()!=null)
+            {
+                isUserLoggedIn = true;
+            }
+        }
+        
+        //only proceed if logged in
+        if (!isUserLoggedIn)
+        {
+            NotificationWriter.writeNotification("Cannot show customised feed: you are not logged in!", Notification.NotificationType.ERROR, request, true);
+            response.sendRedirect(request.getContextPath());
+            return;
+        }
+        else
+        {
+            //We need the Picture Model to grab information from cassandra on which pictures to display
+            PicModel picModel = new PicModel();
+            picModel.setCluster(cluster);
+            java.util.LinkedList<Pic> lsPics = picModel.getFeedPics(lg.getUsername());
+
+            RequestDispatcher rd = request.getRequestDispatcher("/feed.jsp");
+            request.setAttribute("Pics", lsPics);
+            rd.forward(request, response);
+            return;
+        }
+        
     }
 
     /**
@@ -117,7 +110,7 @@ public class UpdateProfilePicture extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response, false);
+        //processRequest(request, response);
     }
 
     /**
@@ -127,7 +120,7 @@ public class UpdateProfilePicture extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Gets feed information and forwards to views that display this information.";
     }// </editor-fold>
 
 }

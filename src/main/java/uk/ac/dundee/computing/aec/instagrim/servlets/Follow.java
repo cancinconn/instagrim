@@ -33,6 +33,7 @@ public class Follow extends HttpServlet {
     private Cluster cluster;
         
     
+    @Override
     public void init(ServletConfig config) throws ServletException {
         cluster = CassandraHosts.getCluster();
     }
@@ -43,6 +44,7 @@ public class Follow extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
+     * @param isGET are we processing a GET request?
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */

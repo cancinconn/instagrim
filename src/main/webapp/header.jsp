@@ -33,13 +33,13 @@
                 %>
 
             <li><a href="${pageContext.request.contextPath}/Images/<%=lg.getUsername()%>">Your Images</a></li>
-            <li><a href="${pageContext.request.contextPath}/Profile/<%=lg.getUsername()%>">Your Profile</a></li>
+            <li><a href="${pageContext.request.contextPath}/Feed">Your Feed</a></li>
             
             </div> <!--close leftDiv -->
             <!-- User's Name & related Components go below-->
             
             <div class = "rightDiv">
-            <li class="liRight"><a href="${pageContext.request.contextPath}/Profile/<%=lg.getUsername()%>"><%=lg.getUsername()%></a></li>
+            <li class="liRight"><a href="${pageContext.request.contextPath}/Profile/<%=lg.getUsername()%>">Logged in as <%=lg.getUsername()%></a></li>
             <li class="liRight"><a href="${pageContext.request.contextPath}/Logout">Log out</a></li>
             </div>
                 <%}

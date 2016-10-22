@@ -60,7 +60,7 @@ public class CommentModel {
         
         Session session = cluster.connect("instagrim");
         
-        PreparedStatement ps = session.prepare("SELECT comment,username,time from picturecomments where picid=? order by time desc");
+        PreparedStatement ps = session.prepare("SELECT comment,username,time from picturecomments where picid=? order by time ASC");
         BoundStatement boundStatement = new BoundStatement(ps);
         
         ResultSet rs = null;

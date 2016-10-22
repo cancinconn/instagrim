@@ -143,24 +143,50 @@ public class Upload extends HttpServlet {
             
             
             HttpSession session=request.getSession();
+            boolean isLoggedIn = false; //assume false, change later
             LoggedIn lg= (LoggedIn)session.getAttribute("LoggedIn");
             String username=null;
-            if (lg.getLoggedIn()){
-                username=lg.getUsername();
+            
+            if (lg != null)
+            {
+                if (lg.getLoggedIn()){
+                    isLoggedIn = true;
+                    username=lg.getUsername();
+                }
             }
+            
+            if (!isLoggedIn)
+            {
+                NotificationWriter.writeNotification("Your picture could not be uploaded. Please log in before uploading.", Notification.NotificationType.ERROR, request);
+                response.sendRedirect(request.getContextPath() + "/Upload");
+                return;
+            }
+
+            
+            boolean wasSuccessful = false; //assume false, change later
+            
             if (i > 0) {
                 byte[] b = new byte[i + 1];
                 imageInputStream.read(b);
                 System.out.println("Length : " + b.length);
                 PicModel tm = new PicModel();
                 tm.setCluster(cluster);
-                tm.insertPic(b, type, filename, username, title, filterType);
+                wasSuccessful = tm.insertPic(b, type, filename, username, title, filterType);
 
                 imageInputStream.close();
             }
             
-            NotificationWriter.writeNotification("Your picture has been uploaded successfully.", Notification.NotificationType.INFO, request);
-            response.sendRedirect(request.getContextPath() + "/Upload");
+            if (wasSuccessful)
+            {
+                NotificationWriter.writeNotification("Your picture has been uploaded successfully.", Notification.NotificationType.INFO, request);
+                response.sendRedirect(request.getContextPath() + "/Upload");
+                return;
+            } else {
+                NotificationWriter.writeNotification("Your file could not be uploaded. Please ensure that it is a picture.", Notification.NotificationType.ERROR, request);
+                response.sendRedirect(request.getContextPath() + "/Upload");
+                return;
+            }
+            
 
     }
     

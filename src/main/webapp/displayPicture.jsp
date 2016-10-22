@@ -28,7 +28,7 @@
         %>
         
         <div class = "centerDivTitleNoBG">
-            <p class = "pageText"><%=pic.getTitle()%></p>
+            <p class = "pageTitle"><%=pic.getTitle()%></p>
         </div>
         <!-- Display pic (output comes from Image servlet, written as an image in the response) -->
         <img class="pic" src="${pageContext.request.contextPath}/RawImage/<%=pic.getSUUID()%>"><br/>
@@ -76,7 +76,7 @@
                     <textarea rows="4" cols="50" name="comment"> </textarea>
                 </div>
                 <div class="buttonDiv">
-                    <input class="button" type="submit" value="Comment"> 
+                    <input type="submit" value="Post Comment"> 
                 </div>
             </form>
                 

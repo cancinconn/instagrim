@@ -15,9 +15,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
+import uk.ac.dundee.computing.aec.instagrim.lib.NotificationWriter;
 import uk.ac.dundee.computing.aec.instagrim.models.CommentModel;
 import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
 import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
+import uk.ac.dundee.computing.aec.instagrim.stores.Notification;
 
 /**
  *
@@ -92,25 +94,30 @@ public class PostComment extends HttpServlet {
                 
                 //validate comment
                 boolean isCommentValid = false; //assumed false, change to true later
+                
                 if (comment!=null)
                 {
-                    if (comment.length()>=1)
+                    if (comment.length()>0 && comment.trim().length() > 0) //comment has to be greater than length 0, not accepting all-whitespace comments either.
                     {
                         isCommentValid = true;
                     }
                 }
+                
+                // Handle erroneous input
                 if (!isCommentValid)
                 {
-                    //TODO: Handle erroneous input
-                    
+                    NotificationWriter.writeNotification("Please make sure your comment isn't empty!", Notification.NotificationType.ERROR, request);
+                    response.sendRedirect(request.getContextPath() + "/Image/" + picUUID);
+                    return;
                 }
                 
                 //validate picUUID
                 boolean doesPicExist = picModel.doesPictureExist(picUUID);
                 if (!doesPicExist)
                 {
-                    //TODO: Handle erroneous input
-                    
+                    NotificationWriter.writeNotification("Please make sure you are posting your comment on a picture that exists!", Notification.NotificationType.ERROR, request);
+                    response.sendRedirect(request.getContextPath() + "/Image/" + picUUID);
+                    return;
                 }
                 
                 
@@ -121,12 +128,15 @@ public class PostComment extends HttpServlet {
                 if (wasSuccessful)
                 {
                     //redirect to image page, should show the newly-added comment
+                    NotificationWriter.writeNotification("Your comment has been posted successfully.", Notification.NotificationType.INFO, request);
                     response.sendRedirect(request.getContextPath() + "/Image/" + picUUID);
+                    return;
                 }
                 else
                 {
-                    //TODO: redirect to ERROR Page. Image page for now.
+                    NotificationWriter.writeNotification("Your comment could not be posted. Please try again.", Notification.NotificationType.ERROR, request);
                     response.sendRedirect(request.getContextPath() + "/Image/" + picUUID);
+                    return;
                 }
                 
             }

@@ -16,13 +16,15 @@
  
         <article>
             
-            <h1>Recently Uploaded Pictures</h1>
+            <h1>Welcome to Instagrim!</h1>
+            
+            <p class = "pageTitle">Pictures from our users</p>
             
         <%
             java.util.LinkedList<Pic> lsPics = (java.util.LinkedList<Pic>) request.getAttribute("Pics");
-            if (lsPics == null) {
+            if (lsPics == null || lsPics.size() == 0) {
         %>
-        <p class="pageText">No Pictures found.</p>
+        <p class="pageText">No pictures found.</p>
         <%
         } else {
 
@@ -49,6 +51,7 @@
                      <!-- display the image -->
                     <td>
                             <a href="${pageContext.request.contextPath}/Image/<%=p.getSUUID()%>" ><img class="picThumb" src="${pageContext.request.contextPath}/Thumb/<%=p.getSUUID()%>"></a>
+                            <p class="pageText"><a href="${pageContext.request.contextPath}/Image/<%=p.getSUUID()%>" ><%=p.getShortTitle()%></a></p>
                     </td>
         
         

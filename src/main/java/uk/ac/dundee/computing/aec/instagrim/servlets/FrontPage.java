@@ -28,7 +28,7 @@ import uk.ac.dundee.computing.aec.instagrim.stores.UserDetails;
  *
  * @author Can
  */
-@WebServlet(name = "FrontPage", urlPatterns = {"/Feed", "/feed"})
+@WebServlet(name = "FrontPage", urlPatterns = {""})
 public class FrontPage extends HttpServlet {
 
     private Cluster cluster;
@@ -66,34 +66,16 @@ public class FrontPage extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        LoggedIn lg = (LoggedIn)request.getSession().getAttribute("LoggedIn");
-        boolean isUserLoggedIn=false;
-        if (lg!= null)
-        {
-            if(lg.getLoggedIn() && lg.getUsername()!=null)
-            {
-                isUserLoggedIn = true;
-            }
-        }
-        
-        if (!isUserLoggedIn)
-        {
-            NotificationWriter.writeNotification("Cannot show customised feed: you are not logged in!", Notification.NotificationType.ERROR, request, true);
-            response.sendRedirect(request.getContextPath());
-            return;
-        }
-        else
-        {
+
             //We need the Picture Model to grab information from cassandra on which pictures to display
             PicModel picModel = new PicModel();
             picModel.setCluster(cluster);
-            java.util.LinkedList<Pic> lsPics = picModel.getFeedPics(lg.getUsername());
+            java.util.LinkedList<Pic> lsPics = picModel.getRecentPics();
 
             RequestDispatcher rd = request.getRequestDispatcher("/frontPage.jsp");
             request.setAttribute("Pics", lsPics);
             rd.forward(request, response);
             return;
-        }
         
     }
 
@@ -118,7 +100,7 @@ public class FrontPage extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Gets information to display on the front page and redirects to a view to show this information.";
     }// </editor-fold>
 
 }

@@ -63,6 +63,39 @@ public class Register extends HttpServlet {
             return; //return so that we do not process this request.
         }
         
+        //Input validation: enforce lowercase usernames
+        username = username.toLowerCase();
+        
+        //Input validation: valid characters
+        if (!username.matches("^[a-zA-Z0-9_]*$") || !password.matches("^[a-zA-Z0-9_]*$")) //only a through z, 0 through 9, and underscores allowed.
+        {
+            //Write error message:
+            NotificationWriter.writeNotification("Please ensure that your username and password are made up only of alphanumeric characters and underscores!", Notification.NotificationType.ERROR, request);
+
+            response.sendRedirect(request.getContextPath()+"/Register");
+            return; //return so that we do not process this request.
+        }
+        
+        //Do Input validation - length:
+        if (username.length() < 3 || password.length() < 8)
+        {
+            //Write error message:
+            NotificationWriter.writeNotification("Please ensure that your username and password fields are long enough!", Notification.NotificationType.ERROR, request);
+
+            response.sendRedirect(request.getContextPath()+"/Register");
+            return; //return so that we do not process this request.
+        }
+        
+        //Do Input validation - first name:
+        if (firstName == null || firstName.equals(""))
+        {
+            //Write error message:
+            NotificationWriter.writeNotification("Please provide your first name.", Notification.NotificationType.ERROR, request);
+
+            response.sendRedirect(request.getContextPath()+"/Register");
+            return; //return so that we do not process this request.
+        }
+        
         User user=new User();
         user.setCluster(cluster);
         

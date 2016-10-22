@@ -63,6 +63,27 @@ public class Pic {
         return title;
     }
     
+        public String getShortTitle()
+    {
+        String processedTitle = title;
+        if (processedTitle != null)
+        {
+            if (processedTitle.contains("<br>"))
+            {
+                processedTitle = processedTitle.replaceAll("<br>", "");
+            }
+            if (processedTitle.length() > 26)
+            {
+                processedTitle = processedTitle.substring(0, 25) + "...";
+            }
+        }
+        else
+        {
+            processedTitle = "Untitled";
+        }
+        return processedTitle;
+    }
+    
     public String getUsername()
     {
         return username;

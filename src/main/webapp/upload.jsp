@@ -37,7 +37,7 @@
                 </div>
                 <div class="centerDiv2">
                     <div class="rightInlineDiv">
-                        <p class = "pageTextInline"> File to upload:</p> <input type="file" name="upfile">
+                        <p class = "pageTextInline"> File to upload:</p> <input type="file" name="upfile" accept=".gif,.jpg,.jpeg,.png,.bmp">
                     </div>
                 </div>
                 <div style="text-align: center;">

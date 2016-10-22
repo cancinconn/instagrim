@@ -29,6 +29,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.spi.FileTypeDetector;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.UUID;
@@ -72,6 +75,11 @@ public class PicModel {
         //get the list of followed people, using the FollowModel
         FollowModel followModel = new FollowModel(cluster);
         LinkedList<Following> followList = followModel.getFollowedUsers(username);
+        
+        if (followList == null || followList.isEmpty())
+        {
+            return results;
+        }
         
         for (Following follow : followList)
         {
@@ -133,9 +141,8 @@ public class PicModel {
             return null;
         } else {
             for (Row row : rs) {
-                Pic pic = new Pic();
                 java.util.UUID UUID = row.getUUID("picid");
-                pic.setUUID(UUID);
+                Pic pic = getPic(Convertors.DISPLAY_PROCESSED,UUID); //populate detail fields by querying the pics table separately
                 Pics.add(pic);
             }
         }
@@ -154,16 +161,28 @@ public class PicModel {
             return null;
         } else {
             for (Row row : rs) {
-                Pic pic = new Pic();
                 java.util.UUID UUID = row.getUUID("picid");
-                pic.setUUID(UUID);
+                Pic pic = getPic(Convertors.DISPLAY_PROCESSED,UUID); //populate detail fields by querying the pics table separately
                 Pics.add(pic);
             }
         }
         return Pics;
     }
+    
+    private boolean isImage(File file) throws IOException
+    {
+        //Check if the file is an image based on whether ImageIO can read it
+        
+            try {
+                ImageIO.read(file).toString();
+            } catch (Exception e) {
+                return false;
+            }
+            
+            return true;
+    }
 
-    public void insertPic(byte[] b, String type, String name, String user, String title, FilterTypes filterType) {
+    public boolean insertPic(byte[] b, String type, String name, String user, String title, FilterTypes filterType) {
         try {
             Convertors convertor = new Convertors();
 
@@ -178,6 +197,12 @@ public class PicModel {
             FileOutputStream output = new FileOutputStream(new File("/var/tmp/instagrim/" + picid));
 
             output.write(b);
+            
+            //server-side filetype check       
+            if (!isImage(new File("/var/tmp/instagrim/" + picid)))
+            {
+                return false;
+            }
             
             System.out.println("APPLYING FILTER: " + filterType.toString());
             
@@ -207,6 +232,8 @@ public class PicModel {
         } catch (IOException ex) {
             System.out.println("Error --> " + ex);
         }
+        
+        return true;
     }
     
     //This method pre-processes the picture before it is turned into a byte-array.
@@ -489,6 +516,31 @@ public class PicModel {
                 return false;
             } else {
                 return true;
+            }
+    }
+    
+    public boolean doesPictureBelongToUser(UUID picUUID, String username)
+    {
+        Session session = cluster.connect("instagrim");
+        
+        ResultSet rs = null;
+        PreparedStatement ps = null;
+        ps = session.prepare("SELECT picid, user from pics where picid = ? LIMIT 1"); //only need to find 1 matching picid to see if it exists, no use wasting time trying to find another
+        BoundStatement boundStatement = new BoundStatement(ps);
+        
+            rs = session.execute( boundStatement.bind(picUUID, username));
+
+            if (rs.isExhausted()) {
+                return false;
+            } else {
+                //only 1 row is returned:
+                for (Row row : rs) {
+                    if (row.getString("user").equals(username))
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
     }
     

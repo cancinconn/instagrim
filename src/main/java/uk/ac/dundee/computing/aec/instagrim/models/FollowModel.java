@@ -11,6 +11,7 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.UUID;
 import uk.ac.dundee.computing.aec.instagrim.stores.Following;
@@ -36,11 +37,7 @@ public class FollowModel {
         PreparedStatement ps = session.prepare("INSERT into follows (user1,user2,time) VALUES (?,?, toTimestamp( now() ) )");
        
         BoundStatement boundStatement = new BoundStatement(ps);
-        session.execute( // this is where the query is executed
-                boundStatement.bind( // here you are binding the 'boundStatement'
-                        user1, user2));
-        //We are assuming this always works.  Also a transaction would be good here !
-        //TODO: Improve - do not assume it always works, look into transactions
+        session.execute(boundStatement.bind(user1, user2));
         
         return true;
     }
@@ -58,7 +55,9 @@ public class FollowModel {
             System.out.println("No followed users returned.");
         } else {
             for (Row row : rs) {
-                followList.add(new Following(row.getString("user2"), row.getTimestamp("time").toString()));
+                Following newFollow = new Following(row.getString("user2"), row.getTimestamp("time").toString());
+                newFollow.setDate(row.getTimestamp("time"));
+                followList.add(newFollow);
             }
         }
         
@@ -66,6 +65,24 @@ public class FollowModel {
         findAndSetProfilePictures(followList);
         
         return followList;
+    }
+    
+    public boolean removeFollow(String user1, String user2)
+    {
+        if (!isAlreadyFollowing(user1, user2))
+        {
+            return false;
+        }
+        else {
+            Date followDate = getFollowDate(user1, user2);
+            
+            Session session = cluster.connect("instagrim");
+            PreparedStatement ps = session.prepare("DELETE FROM follows WHERE user1 = ? AND time = ? AND user2 = ?");
+            BoundStatement boundStatement = new BoundStatement(ps);
+            session.execute(boundStatement.bind(user1, followDate, user2));
+
+            return true;
+        }
     }
     
     public boolean isAlreadyFollowing(String user1, String user2)
@@ -80,6 +97,20 @@ public class FollowModel {
             }
         }
         return false;
+    }
+    
+    private Date getFollowDate(String user1, String user2)
+    {
+        //iterate through list of users being followed and check for occurence.
+        java.util.LinkedList<Following> followList = getFollowedUsers(user1);
+        for (Following follow : followList) {
+
+            if (follow.getUsername().equals(user2))
+            {
+                return follow.getDate();
+            }
+        }
+        return new Date();
     }
     
     private LinkedList<Following> findAndSetProfilePictures(LinkedList<Following> followList)

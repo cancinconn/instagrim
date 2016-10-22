@@ -16,21 +16,11 @@
  
         <article>
             
-        <!-- Presentation logic for when the user is NOT found -->
-        <%
-        UserDetails userDetails = (UserDetails) request.getAttribute("userDetails");
-        if (userDetails == null) {
-        %>
-        <p class="pageText">User not found.</p>
-        <% } else {
-        //Presentation logic for when the user IS found -->
-        %>
-            
-            <h1>Pictures by <a href="${pageContext.request.contextPath}/Profile/<%=userDetails.getUsername()%>"><%=userDetails.getUsername()%></a></h1>
+            <h1>Pictures from users you follow</h1>
             
         <%
             java.util.LinkedList<Pic> lsPics = (java.util.LinkedList<Pic>) request.getAttribute("Pics");
-            if (lsPics == null) {
+            if (lsPics == null || lsPics.size() == 0) {
         %>
         <p class="pageText">No pictures found.</p>
         <%
@@ -72,10 +62,6 @@
             }
         %>
         
-        
-        <%
-} //END PRESENTATION LOGIC
-%>   
         </article>
     </body>
 </html>

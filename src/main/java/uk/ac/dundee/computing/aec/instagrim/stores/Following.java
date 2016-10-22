@@ -5,6 +5,8 @@
  */
 package uk.ac.dundee.computing.aec.instagrim.stores;
 
+import java.util.Date;
+
 /**
  *
  * @author Can
@@ -14,6 +16,7 @@ public class Following {
     private String username;
     private String profilePictureSUUID;
     private String time;
+    private Date date;
     
     public Following(String followedUser, String time)
     {
@@ -25,6 +28,11 @@ public class Following {
     public void setProfilePictureSUUID(String SUUID)
     {
         profilePictureSUUID = SUUID;
+    }
+    
+    public void setDate(Date date)
+    {
+        this.date = date;
     }
     
     public String getUsername()
@@ -40,6 +48,11 @@ public class Following {
     public String getProfilePictureSUUID()
     {
         return profilePictureSUUID;
+    }
+    
+    public Date getDate()
+    {
+        return date;
     }
     
 }

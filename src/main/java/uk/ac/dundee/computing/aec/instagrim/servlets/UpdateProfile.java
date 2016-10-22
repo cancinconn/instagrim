@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
+import uk.ac.dundee.computing.aec.instagrim.lib.NotificationWriter;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
 import uk.ac.dundee.computing.aec.instagrim.stores.*;
 
@@ -63,19 +64,18 @@ public class UpdateProfile extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        //WHERE YOU LEFT OFF - TODO: make updateProfile.jsp, make this servlet's post method update the user details and make get redirect to updateProfile.jsp, then test if the details change in the actual user profile view.
-        
-        
-        //REMOVE WHEN DONE: String username=request.getParameter("username"); //figure out a way to do this without passing the username explicitly
         
         String username = null;
         
         //getting LoggedIn object from session to extract username
         LoggedIn lg = (LoggedIn) request.getSession().getAttribute("LoggedIn");
         
+        boolean isLoggedIn = false; //assume false, change later
+        
         if (lg != null) {
                 if (lg.getLoggedIn()) {
                     username = lg.getUsername();
+                    isLoggedIn = true;
                 }
             }
         
@@ -83,24 +83,53 @@ public class UpdateProfile extends HttpServlet {
         String firstName=request.getParameter("fname");
         String lastName=request.getParameter("lname");
         
-        //Error check
-        if (username == null || password == null)
+        //basic error check
+        if (!isLoggedIn)
         {
-            //TODO: Handle NULL username and/or password
+             NotificationWriter.writeNotification("You must log in before you can update your profile details!", Notification.NotificationType.ERROR, request);
+             response.sendRedirect(request.getContextPath());
+
+            return;
         }
+        
+        //Error check - in case there's an error with the username - shouldn't happen unless future code introduces a bizarre bug. Best to be safe.
+        if (username == null || username.equals(""))
+        {
+            NotificationWriter.writeNotification("Something went wrong. We could not update your profile information - please try again later.", Notification.NotificationType.ERROR, request);
+            if (username!= null)
+            {
+                response.sendRedirect(request.getContextPath()+"/Profile/"+username);
+            }
+            else
+            {
+                response.sendRedirect(request.getContextPath());
+            }
+            return;
+        }
+        
+        //Error check: password
+        if (password == null || password.equals(""))
+        {
+            NotificationWriter.writeNotification("Cannot update your profile details. Ensure that you enter your password to verify the changes!", Notification.NotificationType.ERROR, request);
+            response.sendRedirect(request.getContextPath());
+            return;
+        }
+        
+
         
         User user=new User();
         user.setCluster(cluster);
-        user.updateDetails(username, password, firstName, lastName);
+        boolean wasSuccessful = user.updateDetails(username, password, firstName, lastName);
         
-        if (username!= null)
+        if (wasSuccessful)
         {
-            	response.sendRedirect(request.getContextPath()+"/Profile/"+username);
+            NotificationWriter.writeNotification("Your profile information has been changed successfully.", Notification.NotificationType.INFO, request);
+        } else {
+            NotificationWriter.writeNotification("Your profile information could not be updated. Ensure that you enter your password correctly.", Notification.NotificationType.ERROR, request);
         }
-        else
-        {
-            response.sendRedirect(request.getContextPath());
-        }
+        
+        
+        response.sendRedirect(request.getContextPath()+"/Profile/"+username);
         
         //TODO: Make an error page that displays an error and redirect all errors there - use a stored error object for it
         
