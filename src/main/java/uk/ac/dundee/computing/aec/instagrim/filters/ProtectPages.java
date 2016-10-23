@@ -114,15 +114,26 @@ public class ProtectPages implements Filter {
         System.out.println("Doing filter");
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpSession session=httpReq.getSession(false);
-	LoggedIn li=(LoggedIn)session.getAttribute("LoggedIn");
-        System.out.println("Session in filter "+session);
-        if ((li == null)  || (li.getLoggedIn()==false)){
-               System.out.println("Forward to login");
-                RequestDispatcher rd=request.getRequestDispatcher("/login.jsp");
-		rd.forward(request,response);
-
+        
+        if (session == null)
+        {
+            //cannot be logged in if they have no session, so forward
+            System.out.println("Forward to login");
+            RequestDispatcher rd=request.getRequestDispatcher("/login.jsp");
+            rd.forward(request,response);
+        } else {
+            
+            LoggedIn li=(LoggedIn)session.getAttribute("LoggedIn");
+            System.out.println("Session in filter "+session);
+            if ((li == null)  || (li.getLoggedIn()==false)){
+                   System.out.println("Forward to login");
+                    RequestDispatcher rd=request.getRequestDispatcher("/login.jsp");
+                    rd.forward(request,response);
+            }
             
         }
+        
+	
         Throwable problem = null;
         try {
             chain.doFilter(request, response);

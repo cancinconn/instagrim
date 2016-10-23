@@ -13,13 +13,16 @@ import java.nio.ByteBuffer;
  * @author Administrator
  */
 public class Pic {
-
+    
     private ByteBuffer bImage = null;
     private int length;
     private String type;
     private java.util.UUID UUID=null;
     private String title;
     private String username;
+    
+    private int width;
+    private int height;
     
     public void Pic() {
 
@@ -93,6 +96,60 @@ public class Pic {
          
         byte image[] = Bytes.getArray(bImage);
         return image;
+    }
+    
+    public void setDimensions(int width, int height)
+    {
+        this.width = width;
+        this.height = height;
+    }
+        
+    public int getAdjustedWidth(int targetSize)
+    {
+        if (width > height)
+        {
+            if (width >= targetSize)
+            { //width is larger, so adjust based on width.
+                return targetSize;
+            } else {
+                //width is less than targetsize
+                return width;
+            }
+        }
+        else
+        { //height is greater than ofr equal to width
+            if (height >= targetSize)
+            {
+                //adjust width in proportion with height
+                return width*(targetSize/height);
+            } else { //height is larger but still doesn't exceed targetSize, return as-is.
+                return width;
+            }
+        }
+    }
+    
+    public int getAdjustedHeight(int targetSize)
+    {
+        if (height > width)
+        {
+            if (height >= targetSize)
+            { //width is larger, so adjust based on width.
+                return targetSize;
+            } else {
+                //height is less than targetsize
+                return height;
+            }
+        }
+        else
+        { //height is less than or equal to width
+            if (width >= targetSize)
+            {
+                //adjust height in proportion with width
+                return height*(targetSize/width);
+            } else { //width is larger but still doesn't exceed targetSize, return as-is.
+                return height;
+            }
+        }
     }
 
 }

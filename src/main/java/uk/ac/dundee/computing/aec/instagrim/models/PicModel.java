@@ -152,7 +152,7 @@ public class PicModel {
     public java.util.LinkedList<Pic> getRecentPics () {
         java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
         Session session = cluster.connect("instagrim");
-        PreparedStatement ps = session.prepare("SELECT picid FROM userpiclist LIMIT 21");
+        PreparedStatement ps = session.prepare("SELECT picid FROM recentpics LIMIT 21");
         ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
         rs = session.execute( boundStatement.bind() );
@@ -216,17 +216,25 @@ public class PicModel {
             int thumblength= thumbb.length;
             ByteBuffer thumbbuf=ByteBuffer.wrap(thumbb);
             
+            //get picture size which we need to store to allow for neat formatting when displaying and re-sizing if too large
+            int[] dimensions = new int[2];
+            getPictureSize(picid.toString(),types[1], dimensions);
+            int picWidth = dimensions[0];
+            int picHeight = dimensions[1];
 
             Session session = cluster.connect("instagrim");
 
-            PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name,title) values(?,?,?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name,title, width, height) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             PreparedStatement psInsertPicToUser = session.prepare("insert into userpiclist ( picid, user, pic_added) values(?,?,?)");
+            PreparedStatement psInsertPicToRecentPics = session.prepare("insert into recentpics (time, picid, user) values(?,?,?)");
             BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
             BoundStatement bsInsertPicToUser = new BoundStatement(psInsertPicToUser);
+            BoundStatement bsInsertPicToRecentPics  = new BoundStatement( psInsertPicToRecentPics);
 
             Date DateAdded = new Date();
-            session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name, title));
+            session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name, title, picWidth, picHeight));
             session.execute(bsInsertPicToUser.bind(picid, user, DateAdded));
+            session.execute(bsInsertPicToRecentPics.bind(DateAdded,picid,user));
             session.close();
 
         } catch (IOException ex) {
@@ -234,6 +242,18 @@ public class PicModel {
         }
         
         return true;
+    }
+    
+    //Gets the picture's dimensions.
+    public byte[] getPictureSize(String picid,String type, int[] dimensions) {
+        try {
+            BufferedImage BI = ImageIO.read(new File("/var/tmp/instagrim/" + picid));
+            dimensions[0] = BI.getWidth();
+            dimensions[1] = BI.getHeight();
+        } catch (IOException et) {
+            System.out.println("Error --> " + et);
+        }
+        return null;
     }
     
     //This method pre-processes the picture before it is turned into a byte-array.
@@ -339,7 +359,7 @@ public class PicModel {
             baos.close();
             return imageInByte;
         } catch (IOException et) {
-
+            System.out.println("Error --> " + et);
         }
         return null;
     }
@@ -355,7 +375,7 @@ public class PicModel {
             baos.close();
             return imageInByte;
         } catch (IOException et) {
-
+            System.out.println("Error --> " + et);
         }
         return null;
     }
@@ -557,6 +577,7 @@ public class PicModel {
         String username = null;
         String type = null;
         String title = null;
+        int width = 1, height = 1;
         int length = 0;
         try {
             Convertors convertor = new Convertors();
@@ -565,11 +586,11 @@ public class PicModel {
          
             if (image_type == Convertors.DISPLAY_IMAGE) {
                 
-                ps = session.prepare("select image,imagelength,type from pics where picid =?");
+                ps = session.prepare("select image,imagelength,type,width,height from pics where picid =?");
             } else if (image_type == Convertors.DISPLAY_THUMB) {
-                ps = session.prepare("select thumb,imagelength,thumblength,type from pics where picid =?");
+                ps = session.prepare("select thumb,imagelength,thumblength,type,width,height from pics where picid =?");
             } else if (image_type == Convertors.DISPLAY_PROCESSED) {
-                ps = session.prepare("select user,title,processed,processedlength,type from pics where picid =?");
+                ps = session.prepare("select user,title,processed,processedlength,type,width,height from pics where picid =?");
             }
             BoundStatement boundStatement = new BoundStatement(ps);
             rs = session.execute( // this is where the query is executed
@@ -596,6 +617,9 @@ public class PicModel {
                     }
                     
                     type = row.getString("type");
+                    
+                    width = row.getInt("width");
+                    height = row.getInt("height");
 
                 }
             }
@@ -607,6 +631,7 @@ public class PicModel {
         Pic p = new Pic();
         p.setPic(bImage, length, type);
         p.setUUID(picid); //safe to set picid now that we've found it in the database.
+        p.setDimensions(width, height);
         
         if (username != null)
         {
