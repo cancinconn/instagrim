@@ -67,7 +67,6 @@ public class Image extends HttpServlet {
      */
     public Image() {
         super();
-        // TODO Auto-generated constructor stub
         CommandsMap.put("RawImage", 1);
         CommandsMap.put("Images", 2);
         CommandsMap.put("Thumb", 3);
@@ -94,7 +93,6 @@ public class Image extends HttpServlet {
      * response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
         String args[] = Convertors.SplitRequestPath(request);
         int command;
         try {

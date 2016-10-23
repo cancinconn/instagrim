@@ -20,7 +20,7 @@
             <form method="POST"  action="Register">
                 <div class="centerDiv2" style="margin-top:30px;">
                     <div class="rightInlineDiv">
-                        <p class = "pageTextInline">User Name* <input type="text" name="username" pattern=".{3,}" required title="Must be at least 3 characters, only alphanumeric characters and underscores are allowed."></p>
+                        <p class = "pageTextInline">Username* <input type="text" name="username" pattern=".{3,12}" required title="Must be at least 3 characters, only alphanumeric characters and underscores are allowed. Length must not exceed 12 characters."></p>
                     </div>
                 </div>
                 <div class="centerDiv2">
@@ -38,11 +38,21 @@
                         <p class = "pageTextInline">Last Name <input type="text" name="lname"></p>
                     </div>
                 </div>
-                    
-                    
-                    
-                    
+                
+                <div class="centerDiv2">
+                    <div class="rightInlineDiv">
+                        <p class = "pageTextInline">Email Address* <input type="text" name="email" required></p>
+                    </div>
+                </div>
+                
+                <div class="centerDiv2">
+                    <div class="leftInlineDiv">
+                        <p class = "pageTextInline">Check this box to keep your email private: <input type="checkbox" name="isprivate" value="true"><br></p>
+                    </div>
+                </div>
+         
                 <br/>
+                
                 <div style="text-align: center;">
                     <input type="submit" value="Register"> 
                 </div>

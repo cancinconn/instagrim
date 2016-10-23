@@ -153,7 +153,7 @@ public class PicModel {
     public java.util.LinkedList<Pic> getRecentPics () {
         java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
         Session session = cluster.connect("instagrim");
-        PreparedStatement ps = session.prepare("SELECT picid FROM recentpics LIMIT 21");
+        PreparedStatement ps = session.prepare("SELECT picid FROM recentpics WHERE p_key = 0 ORDER BY time DESC LIMIT 21");
         ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
         rs = session.execute( boundStatement.bind() );
@@ -192,7 +192,6 @@ public class PicModel {
             int length = b.length;
             java.util.UUID picid = convertor.getTimeUUID();
             
-            //TODO: Look into this:
             //The following is a quick and dirty way of doing this, will fill the disk quickly!
             Boolean success = (new File("/var/tmp/instagrim/")).mkdirs();
             FileOutputStream output = new FileOutputStream(new File("/var/tmp/instagrim/" + picid));
@@ -227,7 +226,7 @@ public class PicModel {
 
             PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name,title, width, height) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             PreparedStatement psInsertPicToUser = session.prepare("insert into userpiclist ( picid, user, pic_added) values(?,?,?)");
-            PreparedStatement psInsertPicToRecentPics = session.prepare("insert into recentpics (time, picid, user) values(?,?,?)");
+            PreparedStatement psInsertPicToRecentPics = session.prepare("insert into recentpics (time, picid, p_key) values(?,?,?)");
             BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
             BoundStatement bsInsertPicToUser = new BoundStatement(psInsertPicToUser);
             BoundStatement bsInsertPicToRecentPics  = new BoundStatement( psInsertPicToRecentPics);
@@ -235,7 +234,7 @@ public class PicModel {
             Date DateAdded = new Date();
             session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name, title, picWidth, picHeight));
             session.execute(bsInsertPicToUser.bind(picid, user, DateAdded));
-            session.execute(bsInsertPicToRecentPics.bind(DateAdded,picid,user));
+            session.execute(bsInsertPicToRecentPics.bind(DateAdded,picid,0)); //0 is a constant value for achieving clustering order. Hacky solution, but should work for a small-scale project like this. Cassandra's design is not well-suited for this kind of "recent posts by ALL users" query - a traditional relational database would be more apt for this query.
             session.close();
 
         } catch (IOException ex) {
@@ -548,7 +547,7 @@ public class PicModel {
         ps = session.prepare("SELECT picid, user from pics where picid = ? LIMIT 1"); //only need to find 1 matching picid to see if it exists, no use wasting time trying to find another
         BoundStatement boundStatement = new BoundStatement(ps);
         
-            rs = session.execute( boundStatement.bind(picUUID, username));
+            rs = session.execute( boundStatement.bind(picUUID));
 
             if (rs.isExhausted()) {
                 return false;

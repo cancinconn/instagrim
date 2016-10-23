@@ -134,7 +134,8 @@ public class Login extends HttpServlet {
         
         if (isUserLoggedIn)
         {
-            //TODO: Show error page saying the user is already logged in:
+            //show error notification saying user is already logged in.
+            NotificationWriter.writeNotification("You are already logged in!", Notification.NotificationType.ERROR, request, true);
             response.sendRedirect(request.getContextPath());
         }
         else

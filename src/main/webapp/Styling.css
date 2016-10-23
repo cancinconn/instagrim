@@ -170,8 +170,8 @@ nav li a:hover {
 
 .centerDiv {
     margin:auto;
-    width:400px;
-    height:106px;
+    width:520px;
+    height:154px;
     
     background: #454545;
     padding: 20px; 
@@ -197,6 +197,12 @@ nav li a:hover {
 .rightDiv {
 
     float: right;
+}
+
+.rightDivProfile2 {
+
+    float:left;
+    margin-left:6px;
 }
 
 .leftDivProfile {
@@ -262,6 +268,7 @@ p{
     font-family: "Verdana";
     float:left;
     clear:left;
+    min-height: 19px;
 }
 
 .pRight{
@@ -274,9 +281,14 @@ p{
 .profilePic {
     display:block;
     margin: auto;
+    height: auto; 
+    width: auto; 
+    max-width: 600px; 
+    max-height: 600px;
 }
 
 .pic {
+    box-sizing:content-box;
     display:block;
     margin: auto;
     margin-top:16px;
@@ -342,9 +354,9 @@ html {
   box-sizing: border-box;
 }
 
-*,
-*:before,
-*:after {
+*not(.pic),
+*not(.pic):before,
+*not(.pic):after {
   box-sizing: inherit;
 }
 
@@ -488,8 +500,9 @@ a:hover {
 
 .commentTextDiv {
     margin:auto;
+    margin-left: 120px;
     padding-top: 5px;
-    width:700px;
+    width:660px;
     text-align:center;
     margin-bottom: 2px;
     overflow-wrap: break-word;
@@ -664,5 +677,11 @@ input[type=file] {
 .rightInlineDiv{
     
     text-align: right;
+    
+}
+
+.leftInlineDiv{
+    
+    text-align: left;
     
 }

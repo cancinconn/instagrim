@@ -30,9 +30,13 @@
         <div class = "centerDivTitleNoBG">
             <p class = "pageTitle"><%=pic.getTitle()%></p>
         </div>
-        <!-- Display pic (output comes from Image servlet, written as an image in the response) -->
-        <img class="pic"  src="${pageContext.request.contextPath}/RawImage/<%=pic.getSUUID()%>"><br/>
         
+        <div style="display:block; margin:10px;">
+                    <!-- Display pic (output comes from Image servlet, written as an image in the response) -->
+        <img class="pic"  src="${pageContext.request.contextPath}/RawImage/<%=pic.getSUUID()%>">
+        </div>
+
+        <br>
         <!-- Display author -->
         <p class = "pageText">by <a href="${pageContext.request.contextPath}/Profile/<%=pic.getUsername()%>"><%=pic.getUsername()%></a></p>
          

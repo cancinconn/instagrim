@@ -109,7 +109,7 @@ public class Unfollow extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/Profile/"+lg.getUsername());
             return;
         } else {
-            NotificationWriter.writeNotification("Cannot unfollow " + username + " since you are not followng any users by this name.", Notification.NotificationType.ERROR, request, isGET);
+            NotificationWriter.writeNotification("Cannot unfollow " + username + " since you are not following any users by this name.", Notification.NotificationType.ERROR, request, isGET);
             response.sendRedirect(request.getContextPath() + "/Profile/"+lg.getUsername());
             return;
         }

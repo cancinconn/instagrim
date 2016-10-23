@@ -95,6 +95,19 @@ public class UpdateProfile extends HttpServlet {
         String password=request.getParameter("password");
         String firstName=request.getParameter("fname");
         String lastName=request.getParameter("lname");
+        String email=request.getParameter("email");
+        boolean isEmailPrivate = false;
+        
+        String[] isPrivateValues = request.getParameterValues("isprivate");
+        
+        if (isPrivateValues != null && isPrivateValues.length > 0)
+        {
+            if (isPrivateValues[0].equals("true")) isEmailPrivate = true;
+        }
+        else
+        {
+            isEmailPrivate = false;
+        }
         
         //basic error check
         if (!isLoggedIn)
@@ -132,7 +145,7 @@ public class UpdateProfile extends HttpServlet {
         
         User user=new User();
         user.setCluster(cluster);
-        boolean wasSuccessful = user.updateDetails(username, password, firstName, lastName);
+        boolean wasSuccessful = user.updateDetails(username, password, firstName, lastName, email, isEmailPrivate);
         
         if (wasSuccessful)
         {
@@ -143,9 +156,6 @@ public class UpdateProfile extends HttpServlet {
         
         
         response.sendRedirect(request.getContextPath()+"/Profile/"+username);
-        
-        //TODO: Make an error page that displays an error and redirect all errors there - use a stored error object for it
-        
 
         
     }

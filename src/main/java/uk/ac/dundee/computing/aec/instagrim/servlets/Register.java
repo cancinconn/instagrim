@@ -31,7 +31,6 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Notification;
 public class Register extends HttpServlet {
     Cluster cluster=null;
     public void init(ServletConfig config) throws ServletException {
-        // TODO Auto-generated method stub
         cluster = CassandraHosts.getCluster();
     }
 
@@ -61,6 +60,20 @@ public class Register extends HttpServlet {
         String password=request.getParameter("password");
         String firstName=request.getParameter("fname");
         String lastName=request.getParameter("lname");
+        String email=request.getParameter("email");
+        boolean isEmailPrivate = false;
+        
+        String[] isPrivateValues = request.getParameterValues("isprivate");
+        
+        if (isPrivateValues != null && isPrivateValues.length > 0)
+        {
+            if (isPrivateValues[0].equals("true")) isEmailPrivate = true;
+        }
+        else
+        {
+            isEmailPrivate = false;
+        }
+        
         
         //Do Input validation:
         if (username == null || username.equals("") || password == null || password.equals(""))
@@ -86,10 +99,10 @@ public class Register extends HttpServlet {
         }
         
         //Do Input validation - length:
-        if (username.length() < 3 || password.length() < 8)
+        if (username.length() < 3 || password.length() < 8 || username.length()>12)
         {
             //Write error message:
-            NotificationWriter.writeNotification("Please ensure that your username and password fields are long enough!", Notification.NotificationType.ERROR, request);
+            NotificationWriter.writeNotification("Please ensure that your username and password fields have proper lengths!", Notification.NotificationType.ERROR, request);
 
             response.sendRedirect(request.getContextPath()+"/Register");
             return; //return so that we do not process this request.
@@ -100,6 +113,16 @@ public class Register extends HttpServlet {
         {
             //Write error message:
             NotificationWriter.writeNotification("Please provide your first name.", Notification.NotificationType.ERROR, request);
+
+            response.sendRedirect(request.getContextPath()+"/Register");
+            return; //return so that we do not process this request.
+        }
+        
+        //Do Input validation:
+        if (email == null || email.equals("") || !email.contains("@") || !email.contains(".") || email.length() < 5)
+        {
+            //Write error message:
+            NotificationWriter.writeNotification("Please ensure that your email address is valid!", Notification.NotificationType.ERROR, request);
 
             response.sendRedirect(request.getContextPath()+"/Register");
             return; //return so that we do not process this request.
@@ -119,7 +142,7 @@ public class Register extends HttpServlet {
         }
         
         user.registerUser(username, password);
-        user.updateDetails(username, password, firstName, lastName);
+        user.updateDetails(username, password, firstName, lastName, email, isEmailPrivate);
         
 	Login.loginSession(username, password, request, response, cluster, true);
         
@@ -150,7 +173,8 @@ public class Register extends HttpServlet {
         
         if (isUserLoggedIn)
         {
-            //TODO: Show error page saying the user is logged in - they must log out before registering a new account:
+            //Show error saying the user is logged in - they must log out before registering a new account:
+            NotificationWriter.writeNotification("You are logged in! You must log out before registering with a new account.", Notification.NotificationType.ERROR, request, true);
             response.sendRedirect(request.getContextPath());
         }
         else

@@ -33,7 +33,6 @@ public class PostComment extends HttpServlet {
     
     @Override
     public void init(ServletConfig config) throws ServletException {
-        // TODO Auto-generated method stub
         cluster = CassandraHosts.getCluster();
     }
     
@@ -67,7 +66,6 @@ public class PostComment extends HttpServlet {
         //redirect to image page
         response.sendRedirect(request.getContextPath() + "/Image/" + picUUID); //use loggedIn (session attribute) to determine whose data we're altering
         
-        //TODO: Handle invalid picUUIDs in Image servlet, use doesPictureExist() in the PicModel
     }
 
     /**

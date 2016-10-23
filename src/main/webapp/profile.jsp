@@ -67,6 +67,8 @@
                 <%
                 }
             %>
+                
+                <br>
 
             <!-- 3 divs: center div to contain left and right divs. left identifies the data, right displays it. -->
             
@@ -74,10 +76,12 @@
                 <div class="leftDivProfile"> 
                     <p class="pRight">First Name: </p>
                     <p class="pRight"> Last Name: </p>
+                    <p class="pRight"> E-mail Address: </p>
                 </div>
-                <div class="rightDivProfile"> 
+                <div class="rightDivProfile2"> 
                     <% if (userDetails.getFirstName() != null) { %> <p class="pLeft"><%=userDetails.getFirstName()%> </p>  <% } else { %> <p class="pLeft"> Unknown </p> <% } %>
-                    <% if (userDetails.getFirstName() != null) { %> <p class="pLeft"><%=userDetails.getLastName()%> </p>  <% } else { %> <p class="pLeft"> Unknown </p> <% } %>
+                    <% if (userDetails.getLastName() != null) { %> <p class="pLeft"><%=userDetails.getLastName()%> </p>  <% } else { %> <p class="pLeft"> Unknown </p> <% } %>
+                     <% if (!userDetails.getIsEmailPrivate()) { %> <p class="pLeft"><%=userDetails.getEmail()%> </p>  <% } else { %> <p class="pLeft"> Unknown </p> <% } %>
                 </div>
             </div>
                 

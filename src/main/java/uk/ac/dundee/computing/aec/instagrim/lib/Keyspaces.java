@@ -48,7 +48,8 @@ public final class Keyspaces {
                     + "      password text,\n"
                     + "      first_name text,\n"
                     + "      last_name text,\n"
-                    + "      email set<text>,\n"
+                    + "      email text,\n"
+                    + "      is_email_private boolean,\n"
                     + "      addresses  map<text, frozen <address>>,\n"
                     + "      profilePicID uuid\n"
                     + "  );";
@@ -69,9 +70,9 @@ public final class Keyspaces {
             String createRecentPics = "CREATE TABLE if not exists instagrim.recentpics (\n"
                     + "time timestamp,\n"
                     + "picid uuid,\n"
-                    + "user varchar,\n"
-                    + "PRIMARY KEY (time)\n"
-                    + ");";
+                    + "p_key int,\n" // this is a hack, since cassandra can't order by the partition key.
+                    + "PRIMARY KEY (p_key, time)\n" // so we have a common primary key and use clustering order instead.
+                    + ") WITH CLUSTERING ORDER BY (time DESC);";
             
 
             Session session = c.connect();

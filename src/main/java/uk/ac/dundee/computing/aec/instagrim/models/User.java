@@ -50,7 +50,6 @@ public class User {
                 boundStatement.bind( // here you are binding the 'boundStatement'
                         username,EncodedPassword));
         //We are assuming this always works.  Also a transaction would be good here !
-        //TODO: Improve - do not assume it always works, look into transactions
         
         return true;
     }
@@ -64,11 +63,7 @@ public class User {
         " WHERE login = ?");
                 
         BoundStatement boundStatement = new BoundStatement(ps);
-        session.execute( // this is where the query is executed
-                boundStatement.bind( // here you are binding the 'boundStatement'
-                        UUID.fromString(picUUID), username));
-        
-        //TODO: Don't assume this always returns true (we return false if password is wrong but do nothing for other cases here)
+        session.execute( boundStatement.bind( UUID.fromString(picUUID), username));
         return true;
     }
     
@@ -95,7 +90,7 @@ public class User {
         return null;
     }
     
-    public boolean updateDetails(String userName, String password, String firstName, String lastName)
+    public boolean updateDetails(String userName, String password, String firstName, String lastName, String email, boolean isEmailPrivate)
     {
         
         if (!isValidUser(userName, password))
@@ -106,15 +101,11 @@ public class User {
         Session session = cluster.connect("instagrim");
         
         PreparedStatement ps = session.prepare("UPDATE instagrim.userprofiles" +
-        " SET first_name = ?, last_name = ?" +
+        " SET first_name = ?, last_name = ?, email = ?, is_email_private = ?" +
         " WHERE login = ?");
                 
         BoundStatement boundStatement = new BoundStatement(ps);
-        session.execute( // this is where the query is executed
-                boundStatement.bind( // here you are binding the 'boundStatement'
-                        firstName,lastName,userName));
-        
-        //TODO: Don't assume this always returns true (we return false if password is wrong but do nothing for other cases here)
+        session.execute(boundStatement.bind(firstName,lastName, email, isEmailPrivate, userName));
         return true;
                 
     }
@@ -198,14 +189,13 @@ public class User {
             
            if (cluster != null)
            {
-                //TODO: Get details
                
                 Session session = cluster.connect("instagrim");
            
                 ResultSet rs = null;
                 PreparedStatement ps = null;
            
-                ps = session.prepare("select first_name,last_name from userprofiles where login =?");
+                ps = session.prepare("select first_name,last_name,email,is_email_private from userprofiles where login =?");
            
                 BoundStatement boundStatement = new BoundStatement(ps);
                 rs = session.execute( // this is where the query is executed
@@ -220,12 +210,16 @@ public class User {
                     //get details
                     String firstName = null;
                     String lastName = null;
+                    String email = null;
+                    boolean isEmailPrivate = true;
                     for (Row row : rs) { // we expect only one row here
                             firstName = (row.getString("first_name")); //get the details cassandra returns
                             lastName = (row.getString("last_name")); //get the details cassandra returns
+                            email = row.getString("email");
+                            isEmailPrivate = row.getBool("is_email_private");
                     }
                     //assign to store object
-                    details = new UserDetails(username, firstName, lastName);
+                    details = new UserDetails(username, firstName, lastName, email, isEmailPrivate);
                     
                 }
                

@@ -68,7 +68,6 @@ public class Profile extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response, boolean isGET)
             throws ServletException, IOException {
         
-        //TODO: Read username from URL
         
         //Initialise user and pic models which will grab data from cassandra
         User userModel = new User();

@@ -9,7 +9,7 @@
 <html>
     <div class="footer">
         
-        <p class="footerTextBlock">Built by Can Gafuroglu upon the works of Andy Cobley for an assignment at the University of Dundee.</p>
+        <p class="footerTextBlock">Built by Can Gafuroglu upon code by Andy Cobley for an assignment at the University of Dundee.</p>
 
         <div class="leftDiv">
             <p class="barTitle"><a href="${pageContext.request.contextPath}">Instagrim :| </a></p>
