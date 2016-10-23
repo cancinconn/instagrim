@@ -75,9 +75,9 @@ public class Pic {
             {
                 processedTitle = processedTitle.replaceAll("<br>", "");
             }
-            if (processedTitle.length() > 26)
+            if (processedTitle.length() > 23)
             {
-                processedTitle = processedTitle.substring(0, 25) + "...";
+                processedTitle = processedTitle.substring(0, 22) + "...";
             }
         }
         else
@@ -102,6 +102,16 @@ public class Pic {
     {
         this.width = width;
         this.height = height;
+    }
+    
+    public int getWidth()
+    {
+        return width;
+    }
+    
+    public int getHeight()
+    {
+        return height;
     }
         
     public int getAdjustedWidth(int targetSize)

@@ -46,6 +46,7 @@ public class Login extends HttpServlet {
         {
             response.sendRedirect(request.getContextPath()+"/Error");
         }
+        super.service(request,response);
     }
     
     public static void loginSession(String username, String password, HttpServletRequest request, HttpServletResponse response, Cluster cluster, boolean isFirstLogin) throws IOException

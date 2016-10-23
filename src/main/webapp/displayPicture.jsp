@@ -31,11 +31,19 @@
             <p class = "pageTitle"><%=pic.getTitle()%></p>
         </div>
         <!-- Display pic (output comes from Image servlet, written as an image in the response) -->
-        <img class="pic" src="${pageContext.request.contextPath}/RawImage/<%=pic.getSUUID()%>"><br/>
+        <img class="pic"  src="${pageContext.request.contextPath}/RawImage/<%=pic.getSUUID()%>"><br/>
         
         <!-- Display author -->
         <p class = "pageText">by <a href="${pageContext.request.contextPath}/Profile/<%=pic.getUsername()%>"><%=pic.getUsername()%></a></p>
          
+        <!-- resize notification-->
+        <%if ( pic.getWidth() > 600 || pic.getHeight() > 600)
+        {%>
+            <div class ="notificationInfoDiv2">
+                <p class = "pageText">This image has been resized. <a href="${pageContext.request.contextPath}/RawImage/<%=pic.getSUUID()%>">View Original Size</a></p>
+            </div>
+        <%}%>
+        
         <div class="buttonDiv">
             <a class="button" href="${pageContext.request.contextPath}/Images/<%=pic.getUsername()%>">View other pictures by <%=pic.getUsername()%></a></li>
         </div>
@@ -54,20 +62,6 @@
         }%>
         
         <!-- Display Comment Box if logged in -->
-        <% //determine if the user is logged in
-        boolean isLoggedIn = false;
-        if (lg != null)
-        {
-            if (lg.getLoggedIn())
-            {
-                isLoggedIn = true;
-            }else{
-                isLoggedIn = false;
-            }
-        } else {
-            isLoggedIn = false;
-        }
-        %>
             
             <% if (isLoggedIn) { %>
                 
@@ -141,5 +135,8 @@
 
         
     </body>
+    
+    <%@ include file="footer.jsp" %>
+    
 </html>
 

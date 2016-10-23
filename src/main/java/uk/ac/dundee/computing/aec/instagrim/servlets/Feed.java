@@ -46,6 +46,7 @@ public class Feed extends HttpServlet {
         {
             response.sendRedirect(request.getContextPath()+"/Error");
         }
+        super.service(request,response);
     }
     
     /**

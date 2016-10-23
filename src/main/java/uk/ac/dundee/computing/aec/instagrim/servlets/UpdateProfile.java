@@ -9,6 +9,7 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.exceptions.NoHostAvailableException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -42,6 +43,7 @@ public class UpdateProfile extends HttpServlet {
         {
             response.sendRedirect(request.getContextPath()+"/Error");
         }
+        super.service(request,response);
     }
 
 
@@ -58,7 +60,8 @@ public class UpdateProfile extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        response.sendRedirect(request.getContextPath() + "/" + "updateProfile.jsp"); //use loggedIn (session attribute) to determine whose data we're altering
+        RequestDispatcher rd = request.getRequestDispatcher("/updateProfile.jsp");
+        rd.forward(request,response);
         
     }
 

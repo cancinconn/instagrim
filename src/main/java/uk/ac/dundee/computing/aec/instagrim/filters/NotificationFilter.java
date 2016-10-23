@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Iterator;
 import java.util.LinkedList;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -94,12 +95,15 @@ public class NotificationFilter implements Filter {
                 LinkedList<Notification> notifications = (LinkedList<Notification>) session.getAttribute("notifications");
                 if (notifications != null)
                 {
-                    for (Notification note : notifications)
-                    {
+
+                    Iterator<Notification> notificationIterator = notifications.iterator();
+
+                    while (notificationIterator.hasNext()) {
+                        Notification note = notificationIterator.next();
                         note.decrementExpirationCounter();
                         if (note.getExpirationCounter() <= 0)
                         {
-                            notifications.remove(note);
+                            notificationIterator.remove();
                         }
                     }
                     

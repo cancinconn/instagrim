@@ -44,6 +44,7 @@ public class PostComment extends HttpServlet {
         {
             response.sendRedirect(request.getContextPath()+"/Error");
         }
+        super.service(request,response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

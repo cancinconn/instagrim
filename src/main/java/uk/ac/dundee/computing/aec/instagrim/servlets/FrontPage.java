@@ -47,6 +47,7 @@ public class FrontPage extends HttpServlet {
         {
             response.sendRedirect(request.getContextPath()+"/Error");
         }
+        super.service(request,response);
     }
     
     /**
@@ -78,7 +79,6 @@ public class FrontPage extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-
             //We need the Picture Model to grab information from cassandra on which pictures to display
             PicModel picModel = new PicModel();
             picModel.setCluster(cluster);
@@ -87,6 +87,7 @@ public class FrontPage extends HttpServlet {
             RequestDispatcher rd = request.getRequestDispatcher("/frontPage.jsp");
             request.setAttribute("Pics", lsPics);
             rd.forward(request, response);
+            
             return;
         
     }

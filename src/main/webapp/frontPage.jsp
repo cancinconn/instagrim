@@ -55,8 +55,14 @@
 
                      <!-- display the image -->
                     <td>
-                            <a href="${pageContext.request.contextPath}/Image/<%=p.getSUUID()%>" ><img class="picThumb" src="${pageContext.request.contextPath}/Thumb/<%=p.getSUUID()%>"></a>
-                            <p class="pageText"><a href="${pageContext.request.contextPath}/Image/<%=p.getSUUID()%>" ><%=p.getShortTitle()%></a></p>
+                        <div class="feedCellDiv">
+                            <div class="feedInnerDivUpper">
+                                <a href="${pageContext.request.contextPath}/Image/<%=p.getSUUID()%>" ><img class="picFeed" src="${pageContext.request.contextPath}/Thumb/<%=p.getSUUID()%>"></a>
+                            </div>
+                            <div class="feedInnerDivLower" >
+                                <p class="pageText" style="margin:0px;"><a href="${pageContext.request.contextPath}/Image/<%=p.getSUUID()%>" ><%=p.getShortTitle()%></a></p>
+                            </div>
+                        </div>
                     </td>
         
         
@@ -73,8 +79,6 @@
         </article>
     </body>
     
-    <footer>
-        <p class="pageText">Built by Can Gafuroglu upon the works of Andy C for an assignment at the University of Dundee.</p>
-    </footer>
+    <%@ include file="footer.jsp" %>
     
 </html>

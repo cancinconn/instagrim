@@ -19,19 +19,25 @@
             <h1>Update Your Details</h1>
         
             <form method="POST"  action="UpdateProfile">
-                <ul>
-                    <li>First Name <input type="text" name="fname"></li>
-                    <li>Last Name <input type="text" name="lname"></li>
-                    <li>Confirm your Password to save changes: <input type="password" name="password"></li>
-                </ul>
+                
+                <div class="centerDiv2" style="margin-top:30px;">
+                    <div class="rightInlineDiv">
+                        <p class = "pageTextInline">First Name <input type="text" name="fname"></p>
+                        <p class = "pageTextInline">Last Name <input type="text" name="lname"></p>
+                        <p class = "pageText"> Confirm your Password to save changes: </p>
+                        <div style ="text-align: right;">
+                             <input type="password" name="password">
+                        </div>
+                    </div>
+                </div>
                 <br/>
-                <input type="submit" value="Update Profile"> 
+                <div style="text-align: center;">
+                    <input type="submit" value="Update Profile"> 
+                </div>
             </form>
         
-        <footer>
-            <ul>
-                <li class="footer"><a href="/Instagrim">Home</a></li>
-            </ul>
-        </footer>
     </body>
+    
+    <%@ include file="footer.jsp" %>
+    
 </html>

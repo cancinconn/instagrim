@@ -86,6 +86,7 @@ public class Image extends HttpServlet {
         {
             response.sendRedirect(request.getContextPath()+"/Error");
         }
+        super.service(request,response);
     }
 
     /**

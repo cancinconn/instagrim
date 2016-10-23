@@ -177,6 +177,8 @@ nav li a:hover {
     padding: 20px; 
     box-shadow: 2px 2px 2px #888888;
     
+    box-sizing: content-box;
+    
 }
 
 .centerDivTitleNoBG {
@@ -243,6 +245,18 @@ p{
     text-align: center;
 }
 
+.footerTextBlock{
+    display:block;
+    float:right;
+    margin: auto;
+    margin-top:10px;
+    margin-right: 20px;
+    color: white;
+    font-size: 15px;
+    font-family: "Verdana";
+    text-align: center;
+}
+
 .pLeft{
     color: white;
     font-family: "Verdana";
@@ -267,11 +281,112 @@ p{
     margin: auto;
     margin-top:16px;
     margin-bottom:16px;
+    height: auto; 
+    width: auto; 
+    max-width: 600px; 
+    max-height: 600px;
 }
 
 .picThumb {
     display:block;
     margin: auto;
+}
+
+.picFeed {
+    display: block;
+    position:absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+    margin:auto;
+    height: auto; 
+    width: auto; 
+    max-width: 200px; 
+    max-height: 200px;
+}
+
+.feedCellDiv {
+    display:block;
+    width:250px;
+    height:270px;
+    
+    margin:auto;
+    text-align:center;
+    box-shadow: 2px 2px 2px #888888;
+    background-color: #e8e8e8;
+    position:relative;
+    border: 1px solid #000000;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    
+    padding: 1px;
+    padding-bottom: 1px;
+}
+
+table {
+        border-collapse: separate;
+        border-spacing: 8px 4px;
+}
+
+body {
+  position: relative;
+  margin: 0;
+  padding-bottom: 6rem;
+  min-height: 100%;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+
+.footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  background-color: #efefef;
+  text-align: center;
+  
+  background: #333333;
+    padding: 0px; 
+    margin: 0px;
+    margin-bottom: 0px;
+    height: 41px;    
+    box-shadow: 0px -2px 2px 1px #555555;
+}
+
+.feedInnerDivUpper {
+    display: block;
+    position: relative;
+    width:240px;
+    height:230px;
+}
+.feedInnerDivLower {
+    display: block;
+    width:240px;
+    height:26px;
+    
+    margin:auto;
+    text-align:center;
+    background-color: #e8e8e8;
+    position:relative;
+
+    margin-top: 2px;
+    margin-bottom: 2px;
+    
+    padding: 1px;
+    padding-bottom: 1px;
 }
 
 a {
@@ -431,6 +546,22 @@ a:hover {
     margin-bottom: 10px;
     
     padding: 12px;
+    padding-bottom: 2px;
+}
+
+.notificationInfoDiv2 {
+    margin:auto;
+    width:800px;
+    text-align:center;
+    box-shadow: 2px 2px 2px #888888;
+    background-color: #e8e8e8;
+    min-height: 20px;
+    position:relative;
+    border: 1px solid #000000;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    
+    padding: 5px;
     padding-bottom: 2px;
 }
 

@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.spi.FileTypeDetector;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.UUID;
 import javax.imageio.ImageIO;
@@ -92,7 +93,7 @@ public class PicModel {
         boolean searchComplete = false; //assume false, set to true when it's over
         
         while (resultsCount < targetCount && searchComplete == false)
-        {
+        {  
            for (LinkedList<Pic> picList : picLists)
            {
                //stop if we have enough pics or if all our lists are empty.
@@ -509,9 +510,8 @@ public class PicModel {
             return null;
         } else {
             for (Row row : rs) {
-                Pic pic = new Pic();
                 java.util.UUID UUID = row.getUUID("picid");
-                pic.setUUID(UUID);
+                Pic pic = getPic(Convertors.DISPLAY_PROCESSED,UUID); //populate detail fields by querying the pics table separately
                 Pics.add(pic);
 
             }
