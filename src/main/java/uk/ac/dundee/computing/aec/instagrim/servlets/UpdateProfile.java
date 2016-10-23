@@ -137,8 +137,28 @@ public class UpdateProfile extends HttpServlet {
         if (password == null || password.equals(""))
         {
             NotificationWriter.writeNotification("Cannot update your profile details. Ensure that you enter your password to verify the changes!", Notification.NotificationType.ERROR, request);
-            response.sendRedirect(request.getContextPath());
+            response.sendRedirect(request.getContextPath()+"/Profile/"+username);
             return;
+        }
+        
+        //Do Input validation - first name:
+        if (firstName == null || firstName.equals(""))
+        {
+            //Write error message:
+            NotificationWriter.writeNotification("Cannot update your profile details. Please provide your first name.", Notification.NotificationType.ERROR, request);
+
+            response.sendRedirect(request.getContextPath()+"/Profile/"+username);
+            return; //return so that we do not process this request.
+        }
+        
+        //Do Input validation:
+        if (email == null || email.equals("") || !email.contains("@") || !email.contains(".") || email.length() < 5)
+        {
+            //Write error message:
+            NotificationWriter.writeNotification("Cannot update your profile details. Please ensure that your email address is valid!", Notification.NotificationType.ERROR, request);
+
+            response.sendRedirect(request.getContextPath()+"/Profile/"+username);
+            return; //return so that we do not process this request.
         }
         
 
